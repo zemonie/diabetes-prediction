@@ -2,9 +2,13 @@ import streamlit as st
 import numpy as np
 import pickle
 
-# 1. Load model Extra Trees milikmu yang sudah di-rename
+# 1. Load model bundle yang berisi model dan scaler
 with open('diabetes_prediction.pkl', 'rb') as f:
-    model = pickle.load(f)
+    model_bundle = pickle.load(f)
+
+# Pisahkan objek model dan scaler dari dalam bundle dictionary
+model = model_bundle["model"]
+scaler = model_bundle["scaler"]
 
 # Judul Website
 st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
@@ -28,8 +32,11 @@ if submit:
     # Format ke bentuk array 2D
     features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
     
-    # Prediksi menggunakan model Extra Trees milikmu
-    prediction = model.predict(features)[0]
+    # Lakukan transformasi scaling pada input baru menggunakan scaler bawaan model
+    features_scaled = scaler.transform(features)
+    
+    # Prediksi menggunakan fitur yang sudah di-scale
+    prediction = model.predict(features_scaled)[0]
     
     st.write("---")
     if prediction == 1:
