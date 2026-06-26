@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 
 # 1. Load model Extra Trees milikmu yang sudah di-rename
-with open('extratrees_diabetes.pkl', 'rb') as f:
+with open('diabetes_prediction.pkl', 'rb') as f:
     model = pickle.load(f)
 
 # Judul Website
