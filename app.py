@@ -1,20 +1,65 @@
 import streamlit as st
 import numpy as np
 import pickle
+import pandas as pd
 
-# 1. Load model bundle yang berisi model dan scaler
+# Load file pkl yang berisi bundle model dan scaler
 with open('diabetes_prediction.pkl', 'rb') as f:
     model_bundle = pickle.load(f)
 
-# Pisahkan objek model dan scaler dari dalam bundle dictionary
+# Pisahkan objek model dan scaler dari dictionary
 model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
-# Judul Website
 st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
-# Form Input Data Medis
+# =====================================================================
+# TABEL INDIKATOR REFERENSI (DATASET PIMA INDIANS DIABETES)
+# =====================================================================
+with st.expander("Lihat Tabel Indikator Referensi Medis"):
+    st.write("Rentang nilai ini merupakan acuan umum berdasarkan pola data pasien dalam dataset:")
+    
+    data_indikator = {
+        "Fitur Medis": [
+            "Pregnancies (Kehamilan)",
+            "Glucose (Glukosa Darah)",
+            "Blood Pressure (Tekanan Darah)",
+            "Skin Thickness (Ketebalan Kulit)",
+            "Insulin",
+            "BMI (Indeks Massa Tubuh)",
+            "Diabetes Pedigree Function (DPF)",
+            "Age (Umur)"
+        ],
+        "Cenderung Sehat (0)": [
+            "0 - 3 kali",
+            "< 120 mg/dL",
+            "60 - 80 mmHg",
+            "< 20 mm",
+            "< 100 mIU/L",
+            "18.5 - 25.0",
+            "< 0.400",
+            "21 - 30 tahun"
+        ],
+        "Risiko Diabetes (1)": [
+            "> 5 kali",
+            "> 130 mg/dL (Sangat Sensitif)",
+            "> 85 mmHg",
+            "> 30 mm",
+            "> 150 mIU/L",
+            "> 30.0 (Obesitas)",
+            "> 0.500 (Riwayat Kuat)",
+            "> 35 tahun"
+        ]
+    }
+    
+    df_indikator = pd.DataFrame(data_indikator)
+    st.table(df_indikator)
+    st.caption("Catatan: AI menentukan hasil berdasarkan kombinasi seluruh fitur di atas secara bersamaan, bukan dari satu fitur saja.")
+
+# =====================================================================
+# FORM INPUT DATA MEDIS
+# =====================================================================
 with st.form("form_diabetes_kamu"):
     pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1)
     glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=200)
@@ -27,15 +72,13 @@ with st.form("form_diabetes_kamu"):
     
     submit = st.form_submit_button("Proses")
 
-# Logika Output ketika tombol Proses ditekan
 if submit:
-    # Format ke bentuk array 2D
     features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
     
-    # Lakukan transformasi scaling pada input baru menggunakan scaler bawaan model
+    # Transformasi data baru menggunakan scaler bawaan
     features_scaled = scaler.transform(features)
     
-    # Prediksi menggunakan fitur yang sudah di-scale
+    # Prediksi menggunakan data yang sudah di-scale
     prediction = model.predict(features_scaled)[0]
     
     st.write("---")
