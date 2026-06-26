@@ -15,39 +15,39 @@ st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
 # =====================================================================
-# TABEL INDIKATOR REFERENSI FAKTUAL (STANDAR MEDIS WHO/ADA & DATASET)
+# TABEL INDIKATOR REFERENSI FAKTUAL (URUTAN SESUAI FORM INPUT)
 # =====================================================================
 with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.write("Rentang nilai di bawah ini menggunakan Standar Medis Internasional (WHO/ADA) dan nilai rata-rata riil dari dataset:")
     
     data_indikator = {
         "Fitur Medis": [
+            "Pregnancies (Jumlah Kehamilan)",
             "Glucose (Glukosa Darah 2 Jam Pasca Makan)",
             "Blood Pressure (Tekanan Darah Diastolik)",
-            "BMI (Indeks Massa Tubuh)",
-            "Pregnancies (Jumlah Kehamilan)",
             "Skin Thickness (Ketebalan Kulit Trisep)",
             "Insulin (Kadar Insulin 2 Jam)",
+            "BMI (Indeks Massa Tubuh)",
             "Diabetes Pedigree Function (Skor Genetik)",
             "Age (Umur)"
         ],
         "Normal / Rentang Sehat": [
+            "0 - 3 kali (Mayoritas Data Sehat)",
             "< 140 mg/dL (Standar ADA)",
             "< 80 mmHg (Standar AHA/ADA)",
-            "18.5 - 24.9 (Standar WHO)",
-            "0 - 3 kali (Mayoritas Data Sehat)",
             "10 - 29 mm (Rata-rata Normal)",
             "< 160 mIU/L (Rentang Normal)",
+            "18.5 - 24.9 (Standar WHO)",
             "< 0.500 (Riwayat Keluarga Rendah)",
             "21 - 30 tahun"
         ],
         "Kriteria Risiko / Diabetes": [
+            "> 4 kali (Pola Risiko Dataset)",
             ">= 200 mg/dL (Diabetes) | 140-199 (Pre-Diabetes)",
             ">= 80 mmHg (Hipertensi Tahap 1 & 2)",
-            ">= 30.0 (Obesitas) | 25.0-29.9 (Overweight)",
-            "> 4 kali (Pola Risiko Dataset)",
             ">= 33 mm (Pola Tinggi Pasien Diabetes)",
             "> 160 mIU/L (Hiperinsulinemia)",
+            ">= 30.0 (Obesitas) | 25.0-29.9 (Overweight)",
             ">= 0.500 (Riwayat Keluarga Tinggi)",
             "> 30 tahun (Penyebaran Kasus di Dataset)"
         ]
