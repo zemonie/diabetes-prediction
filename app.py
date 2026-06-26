@@ -15,47 +15,47 @@ st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
 # =====================================================================
-# TABEL INDIKATOR REFERENSI (DATASET PIMA INDIANS DIABETES)
+# TABEL INDIKATOR REFERENSI FAKTUAL (STANDAR MEDIS WHO/ADA & DATASET)
 # =====================================================================
-with st.expander("Lihat Tabel Indikator Referensi Medis"):
-    st.write("Rentang nilai ini merupakan acuan umum berdasarkan pola data pasien dalam dataset:")
+with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
+    st.write("Rentang nilai di bawah ini menggunakan Standar Medis Internasional (WHO/ADA) dan nilai rata-rata riil dari dataset:")
     
     data_indikator = {
         "Fitur Medis": [
-            "Pregnancies (Kehamilan)",
-            "Glucose (Glukosa Darah)",
-            "Blood Pressure (Tekanan Darah)",
-            "Skin Thickness (Ketebalan Kulit)",
-            "Insulin",
+            "Glucose (Glukosa Darah 2 Jam Pasca Makan)",
+            "Blood Pressure (Tekanan Darah Diastolik)",
             "BMI (Indeks Massa Tubuh)",
-            "Diabetes Pedigree Function (DPF)",
+            "Pregnancies (Jumlah Kehamilan)",
+            "Skin Thickness (Ketebalan Kulit Trisep)",
+            "Insulin (Kadar Insulin 2 Jam)",
+            "Diabetes Pedigree Function (Skor Genetik)",
             "Age (Umur)"
         ],
-        "Cenderung Sehat (0)": [
-            "0 - 3 kali",
-            "< 120 mg/dL",
-            "60 - 80 mmHg",
-            "< 20 mm",
-            "< 100 mIU/L",
-            "18.5 - 25.0",
-            "< 0.400",
+        "Normal / Rentang Sehat": [
+            "< 140 mg/dL (Standar ADA)",
+            "< 80 mmHg (Standar AHA/ADA)",
+            "18.5 - 24.9 (Standar WHO)",
+            "0 - 3 kali (Mayoritas Data Sehat)",
+            "10 - 29 mm (Rata-rata Normal)",
+            "< 160 mIU/L (Rentang Normal)",
+            "< 0.500 (Riwayat Keluarga Rendah)",
             "21 - 30 tahun"
         ],
-        "Risiko Diabetes (1)": [
-            "> 5 kali",
-            "> 130 mg/dL (Sangat Sensitif)",
-            "> 85 mmHg",
-            "> 30 mm",
-            "> 150 mIU/L",
-            "> 30.0 (Obesitas)",
-            "> 0.500 (Riwayat Kuat)",
-            "> 35 tahun"
+        "Kriteria Risiko / Diabetes": [
+            ">= 200 mg/dL (Diabetes) | 140-199 (Pre-Diabetes)",
+            ">= 80 mmHg (Hipertensi Tahap 1 & 2)",
+            ">= 30.0 (Obesitas) | 25.0-29.9 (Overweight)",
+            "> 4 kali (Pola Risiko Dataset)",
+            ">= 33 mm (Pola Tinggi Pasien Diabetes)",
+            "> 160 mIU/L (Hiperinsulinemia)",
+            ">= 0.500 (Riwayat Keluarga Tinggi)",
+            "> 30 tahun (Penyebaran Kasus di Dataset)"
         ]
     }
     
     df_indikator = pd.DataFrame(data_indikator)
     st.table(df_indikator)
-    st.caption("Catatan: AI menentukan hasil berdasarkan kombinasi seluruh fitur di atas secara bersamaan, bukan dari satu fitur saja.")
+    st.caption("Sumber Referensi: American Diabetes Association (ADA), World Health Organization (WHO), dan Distribusi Statistik Dataset Pima Indians.")
 
 # =====================================================================
 # FORM INPUT DATA MEDIS
