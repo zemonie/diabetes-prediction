@@ -57,7 +57,6 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.table(df_indikator)
     st.caption("Sumber Referensi: American Diabetes Association (ADA), World Health Organization (WHO), dan Distribusi Statistik Dataset Pima Indians.")
 
-
 # FORM INPUT DATA MEDIS
 # Menyediakan form input interaktif untuk menangkap data pasien baru
 with st.form("form_diabetes_kamu"):
@@ -71,7 +70,6 @@ with st.form("form_diabetes_kamu"):
     age = st.number_input('Age (Umur)', min_value=1, max_value=120, step=1)
     
     submit = st.form_submit_button("Proses")
-
 
 # PROSES PREDIKSI (DIJALANKAN SAAT TOMBOL PROSES DIKLIK)
 if submit:
