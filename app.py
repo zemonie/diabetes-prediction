@@ -52,7 +52,6 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
             "> 30 tahun (Penyebaran Kasus di Dataset)"
         ]
     }
-    
     df_indikator = pd.DataFrame(data_indikator)
     st.table(df_indikator)
     st.caption("Sumber Referensi: American Diabetes Association (ADA), World Health Organization (WHO), dan Distribusi Statistik Dataset Pima Indians.")
@@ -68,20 +67,16 @@ with st.form("form_diabetes_kamu"):
     bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f")
     dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=3.0, format="%.3f")
     age = st.number_input('Age (Umur)', min_value=1, max_value=120, step=1)
-    
     submit = st.form_submit_button("Proses")
 
 # PROSES PREDIKSI (DIJALANKAN SAAT TOMBOL PROSES DIKLIK)
 if submit:
     # Menggabungkan seluruh input form menjadi satu array 2D
     features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
-    
     # WAJIB: Menyamakan skala data baru menggunakan scaler yang dilatih saat training (StandardScaler)
     features_scaled = scaler.transform(features)
-    
     # Melakukan klasifikasi menggunakan data yang sudah disetarakan skalanya
     prediction = model.predict(features_scaled)[0]
-    
     # TAMPILAN OUTPUT PREDIKSI
     st.write("---")
     if prediction == 1:
