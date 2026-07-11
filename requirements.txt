@@ -1,4 +1,4 @@
-streamlit
-numpy
-scikit-learn
-pandas
+streamlit       # Framework utama untuk membuat antarmuka (UI) aplikasi web
+numpy           # Mengubah input data medis menjadi format array 2D untuk model
+scikit-learn    # Menyediakan mesin model Extra Trees dan objek StandardScaler
+pandas          # Menampilkan data indikator referensi medis dalam bentuk tabel
