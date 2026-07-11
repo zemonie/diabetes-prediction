@@ -3,20 +3,22 @@ import numpy as np
 import pickle
 import pandas as pd
 
-# Load file pkl yang berisi bundle model dan scaler
+# 1. LOAD MODEL & SCALER (Memuat bundle hasil training yang sudah disimpan)
 with open('diabetes_prediction.pkl', 'rb') as f:
     model_bundle = pickle.load(f)
 
-# Pisahkan objek model dan scaler dari dictionary
+# Memisahkan objek agar proses transformasi dan prediksi berjalan sinkron
 model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
+# 2. ANTARMUKA (UI) UTAMA APLIKASI
 st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
 # =====================================================================
 # TABEL INDIKATOR REFERENSI FAKTUAL (URUTAN SESUAI FORM INPUT)
 # =====================================================================
+# Menampilkan expander referensi medis sebagai dasar validasi ilmiah aplikasi
 with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.write("Rentang nilai di bawah ini menggunakan Standar Medis Internasional (WHO/ADA) dan nilai rata-rata riil dari dataset:")
     
@@ -42,7 +44,7 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
             "21 - 30 tahun"
         ],
         "Kriteria Risiko / Diabetes": [
-            "> 4 kali (Pola Risiko Dataset)",
+            "Obat > 4 kali (Pola Risiko Dataset)",
             ">= 200 mg/dL (Diabetes) | 140-199 (Pre-Diabetes)",
             ">= 80 mmHg (Hipertensi Tahap 1 & 2)",
             ">= 33 mm (Pola Tinggi Pasien Diabetes)",
@@ -60,6 +62,7 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
 # =====================================================================
 # FORM INPUT DATA MEDIS
 # =====================================================================
+# Menyediakan form input interaktif untuk menangkap data pasien baru
 with st.form("form_diabetes_kamu"):
     pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1)
     glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=200)
@@ -72,15 +75,20 @@ with st.form("form_diabetes_kamu"):
     
     submit = st.form_submit_button("Proses")
 
+# =====================================================================
+# PROSES PREDIKSI (DIJALANKAN SAAT TOMBOL PROSES DIKLIK)
+# =====================================================================
 if submit:
+    # Menggabungkan seluruh input form menjadi satu array 2D
     features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
     
-    # Transformasi data baru menggunakan scaler bawaan
+    # WAJIB: Menyamakan skala data baru menggunakan scaler yang dilatih saat training (StandardScaler)
     features_scaled = scaler.transform(features)
     
-    # Prediksi menggunakan data yang sudah di-scale
+    # Melakukan klasifikasi menggunakan data yang sudah disetarakan skalanya
     prediction = model.predict(features_scaled)[0]
     
+    # TAMPILAN OUTPUT PREDIKSI
     st.write("---")
     if prediction == 1:
         st.error("Hasil Analisis: Positif Diabetes")
