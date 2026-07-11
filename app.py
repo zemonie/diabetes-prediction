@@ -15,9 +15,7 @@ scaler = model_bundle["scaler"]
 st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
-# =====================================================================
 # TABEL INDIKATOR REFERENSI FAKTUAL (URUTAN SESUAI FORM INPUT)
-# =====================================================================
 # Menampilkan expander referensi medis sebagai dasar validasi ilmiah aplikasi
 with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.write("Rentang nilai di bawah ini menggunakan Standar Medis Internasional (WHO/ADA) dan nilai rata-rata riil dari dataset:")
@@ -59,9 +57,8 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.table(df_indikator)
     st.caption("Sumber Referensi: American Diabetes Association (ADA), World Health Organization (WHO), dan Distribusi Statistik Dataset Pima Indians.")
 
-# =====================================================================
+
 # FORM INPUT DATA MEDIS
-# =====================================================================
 # Menyediakan form input interaktif untuk menangkap data pasien baru
 with st.form("form_diabetes_kamu"):
     pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1)
@@ -75,9 +72,8 @@ with st.form("form_diabetes_kamu"):
     
     submit = st.form_submit_button("Proses")
 
-# =====================================================================
+
 # PROSES PREDIKSI (DIJALANKAN SAAT TOMBOL PROSES DIKLIK)
-# =====================================================================
 if submit:
     # Menggabungkan seluruh input form menjadi satu array 2D
     features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
