@@ -12,7 +12,6 @@ model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
 # 2. ANTARMUKA (UI) UTAMA APLIKASI
-# KOREKSI: Mengubah judul menjadi Random Forest agar selaras dengan Bab 4 Skripsi Anda
 st.title("Aplikasi Prediksi Diabetes - Algoritma Random Forest")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
@@ -56,24 +55,21 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.table(df_indikator)
     st.caption("Sumber Referensi: American Diabetes Association (ADA), World Health Organization (WHO), dan Distribusi Statistik Dataset Pima Indians.")
 
-# FORM INPUT DATA MEDIS
-# PERBAIKAN: Menambahkan argumen 'value' dengan nilai medis awal yang normal secara klinis 
-# agar form tidak kosong bernilai 0 yang dapat merusak kalkulasi StandardScaler.
+# FORM INPUT DATA MEDIS (NILAI AWAL KEMBALI JADI 0 SESUAI PERMINTAAN)
 with st.form("form_diabetes_kamu"):
-    pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, value=1, step=1)
-    glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=200, value=115)
-    blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=150, value=72)
-    skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=29)
-    insulin = st.number_input('Insulin', min_value=0, max_value=1000, value=125)
-    bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, value=32.0, format="%.1f")
-    dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=3.0, value=0.470, format="%.3f")
-    age = st.number_input('Age (Umur)', min_value=1, max_value=120, value=33, step=1)
+    pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, value=0, step=1)
+    glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=200, value=0)
+    blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=150, value=0)
+    skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=0)
+    insulin = st.number_input('Insulin', min_value=0, max_value=1000, value=0)
+    bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, value=0.0, format="%.1f")
+    dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=3.0, value=0.000, format="%.3f")
+    age = st.number_input('Age (Umur)', min_value=1, max_value=120, value=1, step=1)
     submit = st.form_submit_button("Proses")
 
 # PROSES PREDIKSI (DIJALANKAN SAAT TOMBOL PROSES DIKLIK)
 if submit:
-    # PERBAIKAN UTAMA: Mengubah array numpy mentah menjadi DataFrame Pandas dengan 
-    # nama kolom asli Pima Indians agar dibaca secara presisi oleh objek StandardScaler (scaler).
+    # 1. Tampung data inputan pengguna ke dalam DataFrame
     input_data = pd.DataFrame([{
         'Pregnancies': pregnancies,
         'Glucose': glucose,
@@ -85,10 +81,28 @@ if submit:
         'Age': age
     }])
     
-    # WAJIB: Menyamakan skala data baru menggunakan scaler yang dilatih saat training (StandardScaler)
+    # 2. PROTEKSI MEDIS (Imputasi Otomatis): 
+    # Jika fitur medis utama bernilai 0 (kosong), ganti otomatis dengan nilai MEDIAN data asli 
+    # agar tidak merusak perhitungan StandardScaler di memori server.
+    cols_medis = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
+    
+    # Nilai median yang di-hardcode berdasarkan nilai tengah riil dari dataset Pima Indians Anda:
+    medians = {
+        'Glucose': 117.0,
+        'BloodPressure': 72.0,
+        'SkinThickness': 29.0,
+        'Insulin': 125.0,
+        'BMI': 32.3
+    }
+    
+    for col in cols_medis:
+        if input_data.loc[0, col] == 0:
+            input_data.loc[0, col] = medians[col]
+            
+    # 3. Jalankan transformasi skala data (Scaler)
     features_scaled = scaler.transform(input_data)
     
-    # Melakukan klasifikasi menggunakan data yang sudah disetarakan skalanya
+    # 4. Prediksi menggunakan model Random Forest
     prediction = model.predict(features_scaled)[0]
     
     # TAMPILAN OUTPUT PREDIKSI
