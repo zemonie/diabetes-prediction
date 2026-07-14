@@ -12,11 +12,11 @@ model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
 # 2. ANTARMUKA (UI) UTAMA APLIKASI
-st.title("Aplikasi Prediksi Diabetes - Algoritma Extra Trees")
+# PERBAIKAN: Mengubah judul aplikasi menjadi Random Forest agar konsisten dengan Bab 4 Skripsi
+st.title("Aplikasi Prediksi Diabetes - Algoritma Random Forest")
 st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil prediksi.")
 
 # TABEL INDIKATOR REFERENSI FAKTUAL (URUTAN SESUAI FORM INPUT)
-# Menampilkan expander referensi medis sebagai dasar validasi ilmiah aplikasi
 with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.write("Rentang nilai di bawah ini menggunakan Standar Medis Internasional (WHO/ADA) dan nilai rata-rata riil dari dataset:")
     
@@ -57,7 +57,6 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
     st.caption("Sumber Referensi: American Diabetes Association (ADA), World Health Organization (WHO), dan Distribusi Statistik Dataset Pima Indians.")
 
 # FORM INPUT DATA MEDIS
-# Menyediakan form input interaktif untuk menangkap data pasien baru
 with st.form("form_diabetes_kamu"):
     pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1)
     glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=200)
@@ -69,15 +68,13 @@ with st.form("form_diabetes_kamu"):
     age = st.number_input('Age (Umur)', min_value=1, max_value=120, step=1)
     submit = st.form_submit_button("Proses")
 
-# PROSES PREDIKSI (DIJALANKAN SAAT TOMBOL PROSES DIKLIK)
+# PROSES PREDIKSI
 if submit:
-    # Menggabungkan seluruh input form menjadi satu array 2D
     features = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]])
-    # WAJIB: Menyamakan skala data baru menggunakan scaler yang dilatih saat training (StandardScaler)
+    # WAJIB: Menyamakan skala data baru menggunakan scaler steril dari model training
     features_scaled = scaler.transform(features)
-    # Melakukan klasifikasi menggunakan data yang sudah disetarakan skalanya
     prediction = model.predict(features_scaled)[0]
-    # TAMPILAN OUTPUT PREDIKSI
+    
     st.write("---")
     if prediction == 1:
         st.error("Hasil Analisis: Positif Diabetes")
