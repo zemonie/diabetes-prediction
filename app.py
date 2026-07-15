@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import pandas as pd
 
-# Konfigurasi halaman diletakkan di paling atas agar tampilan melebar (Bagus untuk layout 2 kolom)
+# Konfigurasi halaman diletakkan di paling atas agar tampilan melebar
 st.set_page_config(layout="wide")
 
 # 1. LOAD MODEL & SCALER STERIL
@@ -17,7 +17,7 @@ st.title("Aplikasi Prediksi Diabetes - Algoritma Random Forest")
 st.write("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
 st.write("---")
 
-# MEMBUAT TAMPILAN 2 KOLOM (Kiri untuk Form Input, Kanan untuk Tabel Referensi Medis)
+# MEMBUAT TAMPILAN 2 KOLOM
 col1, col2 = st.columns([4, 5], gap="large")
 
 # ==================== KOLOM 1: FORM INPUT DATA ====================
@@ -25,15 +25,15 @@ with col1:
     st.subheader("📝 Form Data Medis")
     
     with st.form("form_diabetes_kamu"):
-        # Nilai default disesuaikan dengan nilai normal manusia sehat agar aplikasi lebih logis saat pertama dimuat
+        # PERBAIKAN: Mengubah min_value fitur klinis dari 0 ke angka hidup minimum agar secara medis valid
         pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=100) # Max dinaikkan ke 500
-        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=80) # Max dinaikkan ke 240
-        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=20)
-        insulin = st.number_input('Insulin', min_value=0, max_value=900, value=80) # Max disesuaikan ke 900
-        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=22.5)
-        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.250)
-        age = st.number_input('Age (Umur)', min_value=1, max_value=120, step=1, value=25)
+        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=30, max_value=500, value=100) 
+        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=40, max_value=240, value=80) 
+        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=5, max_value=100, value=20)
+        insulin = st.number_input('Insulin', min_value=5, max_value=900, value=80) 
+        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=10.0, max_value=70.0, format="%.1f", value=22.5)
+        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.078, max_value=3.000, format="%.3f", value=0.250)
+        age = st.number_input('Age (Umur)', min_value=21, max_value=120, step=1, value=25)
         
         submit = st.form_submit_button("Proses Analisis Medis")
 
@@ -60,18 +60,15 @@ with col2:
             "> 4 kali", ">= 200 mg/dL (Diabetes) | 140-199 (Pre)", ">= 80 mmHg", ">= 33 mm", "> 160 mIU/L", ">= 30.0 (Obesitas)", ">= 0.500", "> 30 tahun"
         ]
     }
-    
-    # Menampilkan tabel referensi medis agar sejajar di sebelah kanan form
     st.table(pd.DataFrame(data_indikator))
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
 if submit:
-    # Pembungkusan input langsung ke DataFrame dengan susunan kolom asli sesuai Google Colab (Steril)
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # Penanganan otomatis jika user memasukkan angka 0 pada kolom yang secara medis tidak boleh nol
     # Nilai di bawah ini disinkronkan dari nilai tengah (Median) resmi pasca cleaning Sel 3 di Google Colab
+    # Sebagai backup perlindungan jika ada nilai 0 tak terduga yang lolos
     median_dataset = {
         'Glucose': 117.0,
         'BloodPressure': 72.0,
@@ -84,13 +81,12 @@ if submit:
         if input_df.loc[0, kolom] == 0:
             input_df.loc[0, kolom] = nilai_median
 
-    # Jalankan proses Feature Scaling secara terstruktur menggunakan scaler terlatih
+    # Fitur Scaling secara steril
     features_scaled = scaler.transform(input_df)
     
-    # Jalankan Prediksi Klasifikasi menggunakan model Random Forest
+    # Prediksi Klasifikasi
     prediction = model.predict(features_scaled)[0]
     
-    # Tampilan Output diletakkan di bawah form secara penuh agar menarik
     st.write("### 📢 Hasil Analisis Model Sistem")
     
     if prediction == 1:
