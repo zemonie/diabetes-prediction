@@ -25,7 +25,7 @@ with col1:
     st.subheader("📝 Form Data Medis")
     
     with st.form("form_diabetes_kamu"):
-        # PERBAIKAN: Mengubah min_value fitur klinis dari 0 ke angka hidup minimum agar secara medis valid
+        # Batasan min_value di sini sudah melindungi sistem dari angka 0 yang tidak logis secara klinis
         pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
         glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=30, max_value=500, value=100) 
         blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=40, max_value=240, value=80) 
@@ -40,7 +40,7 @@ with col1:
 # ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
 with col2:
     st.subheader("📊 Panduan Indikator Medis Faktual")
-    st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) dan nilai riil dataset saat mengisi form:")
+    st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
     data_indikator = {
         "Fitur Medis": [
@@ -67,21 +67,7 @@ if submit:
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # Nilai di bawah ini disinkronkan dari nilai tengah (Median) resmi pasca cleaning Sel 3 di Google Colab
-    # Sebagai backup perlindungan jika ada nilai 0 tak terduga yang lolos
-    median_dataset = {
-        'Glucose': 117.0,
-        'BloodPressure': 72.0,
-        'SkinThickness': 23.0,
-        'Insulin': 30.5,
-        'BMI': 32.0
-    }
-    
-    for kolom, nilai_median in median_dataset.items():
-        if input_df.loc[0, kolom] == 0:
-            input_df.loc[0, kolom] = nilai_median
-
-    # Fitur Scaling secara steril
+    # Fitur Scaling secara steril menggunakan objek scaler bawaan dari pkl
     features_scaled = scaler.transform(input_df)
     
     # Prediksi Klasifikasi
