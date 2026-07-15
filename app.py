@@ -3,6 +3,9 @@ import numpy as np
 import pickle
 import pandas as pd
 
+# Konfigurasi halaman diletakkan di paling atas agar tampilan melebar (Bagus untuk layout 2 kolom)
+st.set_page_config(layout="wide")
+
 # 1. LOAD MODEL & SCALER STERIL
 with open('diabetes_prediction.pkl', 'rb') as f:
     model_bundle = pickle.load(f)
@@ -10,13 +13,35 @@ with open('diabetes_prediction.pkl', 'rb') as f:
 model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
-# PERBAIKAN CELAH 1: Judul disesuaikan dengan Algoritma Terbaik di Sel 13 Colab
 st.title("Aplikasi Prediksi Diabetes - Algoritma Random Forest")
-st.write("Masukkan data medis Anda di bawah ini untuk melihat hasil analisis prediksi.")
+st.write("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
+st.write("---")
 
-# TABEL INDIKATOR REFERENSI FAKTUAL
-with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
-    st.write("Rentang nilai di bawah ini menggunakan Standar Medis Internasional (WHO/ADA) dan nilai rata-rata riil dari dataset:")
+# MEMBUAT TAMPILAN 2 KOLOM (Kiri untuk Form Input, Kanan untuk Tabel Referensi Medis)
+col1, col2 = st.columns([4, 5], gap="large")
+
+# ==================== KOLOM 1: FORM INPUT DATA ====================
+with col1:
+    st.subheader("📝 Form Data Medis")
+    
+    with st.form("form_diabetes_kamu"):
+        # Nilai default disesuaikan dengan nilai normal manusia sehat agar aplikasi lebih logis saat pertama dimuat
+        pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
+        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=100) # Max dinaikkan ke 500
+        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=80) # Max dinaikkan ke 240
+        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=20)
+        insulin = st.number_input('Insulin', min_value=0, max_value=900, value=80) # Max disesuaikan ke 900
+        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=22.5)
+        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.250)
+        age = st.number_input('Age (Umur)', min_value=1, max_value=120, step=1, value=25)
+        
+        submit = st.form_submit_button("Proses Analisis Medis")
+
+# ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
+with col2:
+    st.subheader("📊 Panduan Indikator Medis Faktual")
+    st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) dan nilai riil dataset saat mengisi form:")
+    
     data_indikator = {
         "Fitur Medis": [
             "Pregnancies (Jumlah Kehamilan)",
@@ -32,31 +57,21 @@ with st.expander("Lihat Tabel Indikator Referensi Medis Faktual"):
             "0 - 3 kali", "< 140 mg/dL", "< 80 mmHg", "10 - 29 mm", "< 160 mIU/L", "18.5 - 24.9", "< 0.500", "21 - 30 tahun"
         ],
         "Kriteria Risiko / Diabetes": [
-            " > 4 kali", ">= 200 mg/dL (Diabetes) | 140-199 (Pre)", ">= 80 mmHg", ">= 33 mm", "> 160 mIU/L", ">= 30.0 (Obesitas)", ">= 0.500", "> 30 tahun"
+            "> 4 kali", ">= 200 mg/dL (Diabetes) | 140-199 (Pre)", ">= 80 mmHg", ">= 33 mm", "> 160 mIU/L", ">= 30.0 (Obesitas)", ">= 0.500", "> 30 tahun"
         ]
     }
+    
+    # Menampilkan tabel referensi medis agar sejajar di sebelah kanan form
     st.table(pd.DataFrame(data_indikator))
 
-# FORM INPUT DATA MEDIS
-with st.form("form_diabetes_kamu"):
-    pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-    glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=200, value=0)
-    blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=150, value=0)
-    skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=0)
-    insulin = st.number_input('Insulin', min_value=0, max_value=1000, value=0)
-    bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=0.0)
-    dpf = st.number_input('Diabetes Pedigree Function', min_value=0.0, max_value=3.0, format="%.3f", value=0.085)
-    age = st.number_input('Age (Umur)', min_value=1, max_value=120, step=1, value=21)
-    
-    submit = st.form_submit_button("Proses Analisis Medis")
-
+# ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
 if submit:
-    # PERBAIKAN CELAH 3: Membungkus input langsung ke DataFrame dengan susunan kolom asli (Steril)
+    # Pembungkusan input langsung ke DataFrame dengan susunan kolom asli sesuai Google Colab (Steril)
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # PERBAIKAN CELAH 2 (CRITICAL): Imputasi nilai 0 otomatis di latar belakang menggunakan MEDIAN riil dataset Pima
-    # Nilai di bawah ini diambil dari nilai tengah resmi dataset pasca cleaning Sel 3
+    # Penanganan otomatis jika user memasukkan angka 0 pada kolom yang secara medis tidak boleh nol
+    # Nilai di bawah ini disinkronkan dari nilai tengah (Median) resmi pasca cleaning Sel 3 di Google Colab
     median_dataset = {
         'Glucose': 117.0,
         'BloodPressure': 72.0,
@@ -69,17 +84,27 @@ if submit:
         if input_df.loc[0, kolom] == 0:
             input_df.loc[0, kolom] = nilai_median
 
-    # Jalankan proses Scaling secara terstruktur
+    # Jalankan proses Feature Scaling secara terstruktur menggunakan scaler terlatih
     features_scaled = scaler.transform(input_df)
     
-    # Jalankan Prediksi Klasifikasi
+    # Jalankan Prediksi Klasifikasi menggunakan model Random Forest
     prediction = model.predict(features_scaled)[0]
     
-    # TAMPILAN OUTPUT PREDIKSI DIJAMIN AKURAT
-    st.write("---")
+    # Tampilan Output diletakkan di bawah form secara penuh agar menarik
+    st.write("### 📢 Hasil Analisis Model Sistem")
+    
     if prediction == 1:
-        st.error("Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus")
-        st.markdown("**Rekomendasi:** Segera lakukan konsultasi lebih lanjut dengan dokter spesialis penyakit dalam (Endokrinolog) dan kurangi konsumsi glukosa tinggi.")
+        st.error("🚨 **Hasil Analisis Medis:** Pasien Terindikasi **POSITIF** Diabetes Mellitus")
+        st.markdown("""
+        **Rekomendasi Akademis & Medis:** 
+        * Segera lakukan pemeriksaan penunjang lanjutan (seperti tes HbA1c) dan konsultasi dengan dokter spesialis penyakit dalam (Endokrinolog).
+        * Mulai batasi asupan karbohidrat sederhana dan glukosa tinggi.
+        """)
     else:
-        st.success("Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus")
-        st.markdown("**Rekomendasi:** Pertahankan pola hidup sehat, jaga indeks massa tubuh (BMI) ideal, dan lakukan olahraga rutin.")
+        st.success("✅ **Hasil Analisis Medis:** Pasien **NEGATIF** / Tidak Terindikasi Diabetes Mellitus")
+        st.markdown("""
+        **Rekomendasi Akademis & Medis:** 
+        * Pertahankan pola hidup sehat saat ini.
+        * Jaga berat badan ideal agar Indeks Massa Tubuh (BMI) tetap berada dalam rentang normal.
+        * Lakukan aktivitas fisik atau olahraga rutin minimal 150 menit per minggu.
+        """)
