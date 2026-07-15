@@ -42,12 +42,12 @@ with col2:
     st.subheader("Panduan Indikator Medis Faktual")
     st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
-    # Menggunakan struktur tabel Markdown agar tampilan visualnya jauh lebih rapi dan elegan
+   # REVISI: Menyelaraskan teks indikator Glukosa dengan dataset biner (Sehat vs Diabetes)
     st.markdown("""
     | Fitur Medis | Rentang Normal / Sehat | Rentang Risiko / Diabetes |
     | :--- | :--- | :--- |
     | **Pregnancies** (Jumlah Kehamilan) | 0 - 3 kali | ≥ 4 kali |
-    | **Glucose** (Glukosa Darah 2 Jam Pasca Makan) | < 140 mg/dL | 140 - 199 mg/dL (Pre) \| ≥ 200 mg/dL (Diabetes) |
+    | **Glucose** (Glukosa Darah 2 Jam Pasca Makan) | < 200 mg/dL | ≥ 200 mg/dL (Indikasi Diabetes) |
     | **Blood Pressure** (Tekanan Darah Diastolik) | < 80 mmHg | ≥ 80 mmHg (Hipertensi) |
     | **Skin Thickness** (Ketebalan Kulit Trisep) | 10 - 29 mm | ≥ 30 mm (Akumulasi Lemak) |
     | **Insulin** (Kadar Insulin 2 Jam) | < 160 mIU/L | ≥ 160 mIU/L (Resistensi Insulin) |
