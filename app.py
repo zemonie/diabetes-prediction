@@ -25,14 +25,15 @@ with col1:
     st.subheader("Form Data Medis")
     
     with st.form("form_diabetes_kamu"):
-        pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=0) 
-        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=0) 
-        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=0)
-        insulin = st.number_input('Insulin', min_value=0, max_value=900, value=0) 
-        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=0.0)
-        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.000)
-        age = st.number_input('Age (Umur)', min_value=0, max_value=120, step=1, value=0)
+        # REVISI: Mengubah nilai default (value) menjadi data medis normal manusia untuk stabilitas model SVM
+        pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=1)
+        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=115) 
+        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=72) 
+        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=23)
+        insulin = st.number_input('Insulin', min_value=0, max_value=900, value=30) 
+        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=32.0)
+        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.372)
+        age = st.number_input('Age (Umur)', min_value=0, max_value=120, step=1, value=29)
         
         submit = st.form_submit_button("Proses Analisis Medis")
 
