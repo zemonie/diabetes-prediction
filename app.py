@@ -25,15 +25,15 @@ with col1:
     st.subheader("📝 Form Data Medis")
     
     with st.form("form_diabetes_kamu"):
-        # Batasan min_value di sini sudah melindungi sistem dari angka 0 yang tidak logis secara klinis
+        # REVISI: Semua default value diubah menjadi 0 atau batas minimum terendahnya
         pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=30, max_value=500, value=100) 
-        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=40, max_value=240, value=80) 
-        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=5, max_value=100, value=20)
-        insulin = st.number_input('Insulin', min_value=5, max_value=900, value=80) 
-        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=10.0, max_value=70.0, format="%.1f", value=22.5)
-        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.078, max_value=3.000, format="%.3f", value=0.250)
-        age = st.number_input('Age (Umur)', min_value=21, max_value=120, step=1, value=25)
+        glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=0) 
+        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=0) 
+        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=0)
+        insulin = st.number_input('Insulin', min_value=0, max_value=900, value=0) 
+        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=0.0)
+        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.000)
+        age = st.number_input('Age (Umur)', min_value=0, max_value=120, step=1, value=0)
         
         submit = st.form_submit_button("Proses Analisis Medis")
 
@@ -42,7 +42,7 @@ with col2:
     st.subheader("📊 Panduan Indikator Medis Faktual")
     st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
-    # Revisi Tabel: Rentang diperjelas dan ditambahkan kolom Sumber Referensi
+    # REVISI: Menghilangkan kolom referensi ilmiah agar tabel lebih bersih di website
     data_indikator = {
         "Fitur Medis": [
             "Pregnancies (Jumlah Kehamilan)",
@@ -73,16 +73,6 @@ with col2:
             "25.0 - 29.9 (Overweight) | ≥ 30.0 (Obesitas)", 
             "≥ 0.500 (Riwayat Keluarga Kuat)", 
             "> 30 tahun (Metabolisme Menurun)"
-        ],
-        "Sumber Referensi Ilmiah (Klinis)": [
-            "Am. J. Obstet. Gynecol. (Multiparity Study)",
-            "American Diabetes Association (ADA)",
-            "American Heart Association (AHA)",
-            "WHO Anthropometry Guidelines",
-            "J. Clin. Endocrinol. Metab.",
-            "World Health Organization (WHO)",
-            "Pima Indians Diabetes Dataset Standard",
-            "American Diabetes Association (ADA)"
         ]
     }
     st.table(pd.DataFrame(data_indikator))
