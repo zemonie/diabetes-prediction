@@ -22,10 +22,9 @@ col1, col2 = st.columns([4, 5], gap="large")
 
 # ==================== KOLOM 1: FORM INPUT DATA ====================
 with col1:
-    st.subheader("📝 Form Data Medis")
+    st.subheader("Form Data Medis")
     
     with st.form("form_diabetes_kamu"):
-        # REVISI: Semua default value diubah menjadi 0 atau batas minimum terendahnya
         pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
         glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=0) 
         blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=0) 
@@ -39,43 +38,22 @@ with col1:
 
 # ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
 with col2:
-    st.subheader("📊 Panduan Indikator Medis Faktual")
+    st.subheader("Panduan Indikator Medis Faktual")
     st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
-    # REVISI: Menghilangkan kolom referensi ilmiah agar tabel lebih bersih di website
-    data_indikator = {
-        "Fitur Medis": [
-            "Pregnancies (Jumlah Kehamilan)",
-            "Glucose (Glukosa Darah 2 Jam Pasca Makan)",
-            "Blood Pressure (Tekanan Darah Diastolik)",
-            "Skin Thickness (Ketebalan Kulit Trisep)",
-            "Insulin (Kadar Insulin 2 Jam)",
-            "BMI (Indeks Massa Tubuh)",
-            "Diabetes Pedigree Function (Skor Genetik)",
-            "Age (Umur)"
-        ],
-        "Rentang Normal / Sehat": [
-            "0 - 3 kali", 
-            "< 140 mg/dL", 
-            "< 80 mmHg", 
-            "10 - 29 mm", 
-            "< 160 mIU/L", 
-            "18.5 - 24.9", 
-            "< 0.500", 
-            "21 - 30 tahun"
-        ],
-        "Rentang Risiko / Diabetes": [
-            "≥ 4 kali", 
-            "140 - 199 mg/dL (Pre) | ≥ 200 mg/dL (Diabetes)", 
-            "≥ 80 mmHg (Hipertensi)", 
-            "≥ 30 mm (Akumulasi Lemak)", 
-            "≥ 160 mIU/L (Resistensi Insulin)", 
-            "25.0 - 29.9 (Overweight) | ≥ 30.0 (Obesitas)", 
-            "≥ 0.500 (Riwayat Keluarga Kuat)", 
-            "> 30 tahun (Metabolisme Menurun)"
-        ]
-    }
-    st.table(pd.DataFrame(data_indikator))
+    # REVISI: Menggunakan struktur tabel Markdown agar tampilan visualnya jauh lebih rapi dan elegan
+    st.markdown("""
+    | Fitur Medis | Rentang Normal / Sehat | Rentang Risiko / Diabetes |
+    | :--- | :--- | :--- |
+    | **Pregnancies** (Jumlah Kehamilan) | 0 - 3 kali | ≥ 4 kali |
+    | **Glucose** (Glukosa Darah 2 Jam Pasca Makan) | < 140 mg/dL | 140 - 199 mg/dL (Pre) \| ≥ 200 mg/dL (Diabetes) |
+    | **Blood Pressure** (Tekanan Darah Diastolik) | < 80 mmHg | ≥ 80 mmHg (Hipertensi) |
+    | **Skin Thickness** (Ketebalan Kulit Trisep) | 10 - 29 mm | ≥ 30 mm (Akumulasi Lemak) |
+    | **Insulin** (Kadar Insulin 2 Jam) | < 160 mIU/L | ≥ 160 mIU/L (Resistensi Insulin) |
+    | **BMI** (Indeks Massa Tubuh) | 18.5 - 24.9 | 25.0 - 29.9 (Overweight) \| ≥ 30.0 (Obesitas) |
+    | **Diabetes Pedigree Function** (Skor Genetik) | < 0.500 | ≥ 0.500 (Riwayat Keluarga Kuat) |
+    | **Age** (Umur) | 21 - 30 tahun | > 30 tahun (Metabolisme Menurun) |
+    """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
 if submit:
@@ -89,17 +67,17 @@ if submit:
     prediction = model.predict(features_scaled)[0]
     
     st.write("---")
-    st.write("### 📢 Hasil Analisis Model Sistem")
+    st.subheader("Hasil Analisis Model Sistem")
     
     if prediction == 1:
-        st.error("🚨 **Hasil Analisis Medis:** Pasien Terindikasi **POSITIF** Diabetes Mellitus")
+        st.error("Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus")
         st.markdown("""
         **Rekomendasi Akademis & Medis:** 
         * Segera lakukan pemeriksaan penunjang lanjutan (seperti tes HbA1c) dan konsultasi dengan dokter spesialis penyakit dalam (Endokrinolog).
         * Mulai batasi asupan karbohidrat sederhana dan makanan dengan indeks glikemik tinggi.
         """)
     else:
-        st.success("✅ **Hasil Analisis Medis:** Pasien **NEGATIF** / Tidak Terindikasi Diabetes Mellitus")
+        st.success("Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus")
         st.markdown("""
         **Rekomendasi Akademis & Medis:** 
         * Pertahankan pola hidup sehat yang dijalankan saat ini.
