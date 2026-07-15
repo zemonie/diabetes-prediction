@@ -42,6 +42,7 @@ with col2:
     st.subheader("📊 Panduan Indikator Medis Faktual")
     st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
+    # Revisi Tabel: Rentang diperjelas dan ditambahkan kolom Sumber Referensi
     data_indikator = {
         "Fitur Medis": [
             "Pregnancies (Jumlah Kehamilan)",
@@ -53,11 +54,35 @@ with col2:
             "Diabetes Pedigree Function (Skor Genetik)",
             "Age (Umur)"
         ],
-        "Normal / Rentang Sehat": [
-            "0 - 3 kali", "< 140 mg/dL", "< 80 mmHg", "10 - 29 mm", "< 160 mIU/L", "18.5 - 24.9", "< 0.500", "21 - 30 tahun"
+        "Rentang Normal / Sehat": [
+            "0 - 3 kali", 
+            "< 140 mg/dL", 
+            "< 80 mmHg", 
+            "10 - 29 mm", 
+            "< 160 mIU/L", 
+            "18.5 - 24.9", 
+            "< 0.500", 
+            "21 - 30 tahun"
         ],
-        "Kriteria Risiko / Diabetes": [
-            "> 4 kali", ">= 200 mg/dL (Diabetes) | 140-199 (Pre)", ">= 80 mmHg", ">= 33 mm", "> 160 mIU/L", ">= 30.0 (Obesitas)", ">= 0.500", "> 30 tahun"
+        "Rentang Risiko / Diabetes": [
+            "≥ 4 kali", 
+            "140 - 199 mg/dL (Pre) | ≥ 200 mg/dL (Diabetes)", 
+            "≥ 80 mmHg (Hipertensi)", 
+            "≥ 30 mm (Akumulasi Lemak)", 
+            "≥ 160 mIU/L (Resistensi Insulin)", 
+            "25.0 - 29.9 (Overweight) | ≥ 30.0 (Obesitas)", 
+            "≥ 0.500 (Riwayat Keluarga Kuat)", 
+            "> 30 tahun (Metabolisme Menurun)"
+        ],
+        "Sumber Referensi Ilmiah (Klinis)": [
+            "Am. J. Obstet. Gynecol. (Multiparity Study)",
+            "American Diabetes Association (ADA)",
+            "American Heart Association (AHA)",
+            "WHO Anthropometry Guidelines",
+            "J. Clin. Endocrinol. Metab.",
+            "World Health Organization (WHO)",
+            "Pima Indians Diabetes Dataset Standard",
+            "American Diabetes Association (ADA)"
         ]
     }
     st.table(pd.DataFrame(data_indikator))
@@ -73,6 +98,7 @@ if submit:
     # Prediksi Klasifikasi
     prediction = model.predict(features_scaled)[0]
     
+    st.write("---")
     st.write("### 📢 Hasil Analisis Model Sistem")
     
     if prediction == 1:
@@ -80,13 +106,13 @@ if submit:
         st.markdown("""
         **Rekomendasi Akademis & Medis:** 
         * Segera lakukan pemeriksaan penunjang lanjutan (seperti tes HbA1c) dan konsultasi dengan dokter spesialis penyakit dalam (Endokrinolog).
-        * Mulai batasi asupan karbohidrat sederhana dan glukosa tinggi.
+        * Mulai batasi asupan karbohidrat sederhana dan makanan dengan indeks glikemik tinggi.
         """)
     else:
         st.success("✅ **Hasil Analisis Medis:** Pasien **NEGATIF** / Tidak Terindikasi Diabetes Mellitus")
         st.markdown("""
         **Rekomendasi Akademis & Medis:** 
-        * Pertahankan pola hidup sehat saat ini.
-        * Jaga berat badan ideal agar Indeks Massa Tubuh (BMI) tetap berada dalam rentang normal.
-        * Lakukan aktivitas fisik atau olahraga rutin minimal 150 menit per minggu.
+        * Pertahankan pola hidup sehat yang dijalankan saat ini.
+        * Jaga berat badan ideal agar Indeks Massa Tubuh (BMI) tetap berada dalam rentang normal (18.5 - 24.9).
+        * Lakukan aktivitas fisik atau olahraga rutin minimal 150 menit per minggu sesuai anjuran WHO.
         """)
