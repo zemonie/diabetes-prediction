@@ -4,19 +4,19 @@ import pickle
 import pandas as pd
 
 # Konfigurasi halaman diletakkan di paling atas agar tampilan melebar
-st.set_page_config(layout="wide", page_title="Prediksi Diabetes - KNN")
+st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
 
-# 1. LOAD MODEL & SCALER STERIL
+# 1. LOAD MODEL NAIVE BAYES & SCALER STERIL
 @st.cache_resource
 def load_model():
-    with open('diabetes_prediction_KNN.pkl', 'rb') as f:
+    with open('diabetes_prediction_NB.pkl', 'rb') as f:
         return pickle.load(f)
 
 model_bundle = load_model()
 model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
-st.title("Aplikasi Prediksi Diabetes - Algoritma K-Nearest Neighbors")
+st.title("Aplikasi Prediksi Diabetes - Algoritma Naive Bayes")
 st.write("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
 st.write("---")
 
@@ -65,7 +65,7 @@ if submit:
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # Feature Scaling steril menggunakan objek scaler dari pickle
+    # Feature Scaling steril menggunakan objek scaler Naive Bayes
     features_scaled = scaler.transform(input_df)
     
     # Prediksi Klasifikasi
