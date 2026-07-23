@@ -42,9 +42,9 @@ with col1:
 # ==================== KOLOM 2: DUA TABEL INDIKATOR ACUAN ====================
 with col2:
     st.subheader("Panduan & Acuan Pembanding Medis")
-    st.info("Pilih tab di bawah untuk melihat acuan medis internasional (WHO) atau profil statistik dataset pelatihan AI:")
+    st.info("Pilih tab di bawah untuk melihat acuan medis internasional (WHO) atau rentang statistik dataset pelatihan AI:")
 
-    # Menggunakan fitur Tab agar tampilan rapi
+    # Menggunakan fitur Tab agar tampilan rapi & interaktif
     tab1, tab2 = st.tabs(["📋 Tabel 1: Acuan WHO/ADA", "📊 Tabel 2: Statistik Dataset PIMA"])
 
     with tab1:
@@ -61,24 +61,24 @@ with col2:
         | **Diabetes Pedigree** | < 0.500 | ≥ 0.500 |
         | **Age** | < 30 tahun | ≥ 30 tahun |
         
-        > *Panduan univariat medis untuk indikator tunggal.*
+        > *Catatan: Acuan standar klinis internasional univariat (indikator tunggal).*
         """)
 
     with tab2:
-        st.markdown("**Profil Statistik Dataset Penelitian (744 Data PIMA)**")
+        st.markdown("**Profil Statistik Dataset Penelitian (Data PIMA Indians)**")
         st.markdown("""
-        | Fitur Medis | Rata-rata (Mean) | Standar Deviasi | Nilai Min - Max |
-        | :--- | :--- | :--- | :--- |
-        | **Pregnancies** | 3.8 kali | 3.3 | 0 - 17 kali |
-        | **Glucose** | 121.7 mg/dL | 30.5 | 44 - 199 mg/dL |
-        | **Blood Pressure** | 72.4 mmHg | 12.1 | 24 - 122 mmHg |
-        | **Skin Thickness** | 29.2 mm | 8.9 | 7 - 99 mm |
-        | **Insulin** | 141.8 mIU/L | 86.2 | 14 - 846 mIU/L |
-        | **BMI** | 32.5 kg/m² | 6.9 | 18.2 - 67.1 kg/m² |
-        | **Diabetes Pedigree** | 0.472 | 0.33 | 0.078 - 2.420 |
-        | **Age** | 33.2 tahun | 11.8 | 21 - 81 tahun |
+        | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
+        | :--- | :--- | :--- |
+        | **Pregnancies** | 0 - 3 kali (Rata-rata: 3.8) | 4 - 17 kali |
+        | **Glucose** | 44 - 139 mg/dL (Rata-rata: 121.7) | 140 - 199 mg/dL |
+        | **Blood Pressure** | 24 - 79 mmHg (Rata-rata: 72.4) | 80 - 122 mmHg |
+        | **Skin Thickness** | 7 - 29 mm (Rata-rata: 29.2) | 30 - 99 mm |
+        | **Insulin** | 14 - 159 mIU/L (Rata-rata: 141.8) | 160 - 846 mIU/L |
+        | **BMI** | 18.2 - 24.9 kg/m² (Rata-rata: 32.5) | 25.0 - 67.1 kg/m² |
+        | **Diabetes Pedigree** | 0.078 - 0.499 (Rata-rata: 0.472) | 0.500 - 2.420 |
+        | **Age** | 21 - 29 tahun (Rata-rata: 33.2) | 30 - 81 tahun |
         
-        > *Pola statistik riil yang dipelajari oleh model Naive Bayes secara multivariat.*
+        > *Catatan: Sebaran nilai riil dari 744 sampel data penderita yang dipelajari oleh Naive Bayes.*
         """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
@@ -86,7 +86,7 @@ if submit:
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # 1. Feature Scaling steril
+    # 1. Feature Scaling steril menggunakan objek scaler dari pickle
     features_scaled = scaler.transform(input_df)
     
     # 2. Prediksi Klasifikasi dan Probabilitas
