@@ -3,10 +3,10 @@ import numpy as np
 import pickle
 import pandas as pd
 
-# Konfigurasi halaman diletakkan di paling atas agar tampilan melebar
+# 1. KONFIGURASI HALAMAN (HARUS DI PANGGILAN PERTAMA)
 st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
 
-# 1. LOAD MODEL NAIVE BAYES & SCALER STERIL
+# 2. LOAD MODEL NAIVE BAYES & SCALER STERIL
 @st.cache_resource
 def load_model():
     with open('diabetes_prediction_NB.pkl', 'rb') as f:
@@ -28,7 +28,6 @@ with col1:
     st.subheader("Form Data Medis Pasien")
     
     with st.form("form_diabetes_kamu"):
-        # Default value diatur ke nilai rata-rata/normal manusia realistis (Bukan 0)
         pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
         glucose = st.number_input('Glucose (Kadar Glukosa mg/dL)', min_value=40, max_value=500, value=100) 
         blood_pressure = st.number_input('Blood Pressure (Tekanan Darah mmHg)', min_value=40, max_value=240, value=70) 
@@ -57,7 +56,7 @@ with col2:
     | **Diabetes Pedigree Function** | < 0.500 | ≥ 0.500 |
     | **Age** (Umur) | < 30 tahun | ≥ 30 tahun |
     
-    > *Catatan: Model AI menganalisis kombinasi dari semua fitur di atas secara bersamaan (multivariat), bukan hanya satu fitur tunggal. Nilai di ambang batas (misal: Glukosa 170-an) yang disertai faktor risiko lain akan secara signifikan meningkatkan skor prediksi.*
+    > *Catatan: Model AI menganalisis kombinasi dari semua fitur di atas secara bersamaan (multivariat), bukan hanya satu fitur tunggal. Nilai di ambang batas yang disertai faktor risiko lain akan secara signifikan meningkatkan skor probabilitas prediksi.*
     """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
@@ -65,24 +64,29 @@ if submit:
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # Feature Scaling steril menggunakan objek scaler Naive Bayes
+    # 1. Feature Scaling steril menggunakan objek scaler dari pickle
     features_scaled = scaler.transform(input_df)
     
-    # Prediksi Klasifikasi
+    # 2. Prediksi Klasifikasi dan Probabilitas
     prediction = model.predict(features_scaled)[0]
+    probabilities = model.predict_proba(features_scaled)[0]
+    prob_positif = probabilities[1] * 100  # Peluang Diabetes (%)
     
     st.write("---")
     st.subheader("Hasil Analisis Model Sistem")
     
+    # Tampilkan persentase probabilitas
+    st.metric(label="Estimasi Tingkat Probabilitas Risiko Diabetes", value=f"{prob_positif:.1f}%")
+    
     if prediction == 1:
-        st.error("Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus")
+        st.error(f"Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus (Probabilitas: {prob_positif:.1f}%)")
         st.markdown("""
         **Rekomendasi Akademis & Medis:** 
         * Segera lakukan pemeriksaan penunjang lanjutan (seperti tes HbA1c) dan konsultasi dengan dokter spesialis penyakit dalam (Endokrinolog).
         * Mulai batasi asupan karbohidrat sederhana dan makanan dengan indeks glikemik tinggi.
         """)
     else:
-        st.success("Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus")
+        st.success(f"Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus (Probabilitas Risiko: {prob_positif:.1f}%)")
         st.markdown("""
         **Rekomendasi Akademis & Medis:** 
         * Pertahankan pola hidup sehat yang dijalankan saat ini.
