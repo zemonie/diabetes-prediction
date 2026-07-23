@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import pandas as pd
 
-# 1. KONFIGURASI HALAMAN (HARUS DI PANGGILAN PERTAMA)
+# 1. KONFIGURASI HALAMAN
 st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
 
 # 2. LOAD MODEL NAIVE BAYES & SCALER STERIL
@@ -39,43 +39,64 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis")
 
-# ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
+# ==================== KOLOM 2: DUA TABEL INDIKATOR ACUAN ====================
 with col2:
-    st.subheader("Panduan Indikator Medis Faktual")
-    st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
-    
-    st.markdown("""
-    | Fitur Medis | Rentang Rendah Risiko | Rentang Perlu Diwaspadai (Risiko) |
-    | :--- | :--- | :--- |
-    | **Pregnancies** (Jumlah Kehamilan) | 0 - 3 kali | ≥ 4 kali |
-    | **Glucose** (Kadar Glukosa) | < 140 mg/dL | ≥ 140 mg/dL (Waspada) / ≥ 200 mg/dL (Risiko Tinggi) |
-    | **Blood Pressure** (Tekanan Darah) | < 80 mmHg | ≥ 80 mmHg |
-    | **Skin Thickness** (Ketebalan Kulit) | < 30 mm | ≥ 30 mm |
-    | **Insulin** (Kadar Insulin) | < 160 mIU/L | ≥ 160 mIU/L |
-    | **BMI** (Indeks Massa Tubuh) | < 25.0 | ≥ 25.0 (Overweight/Obesitas) |
-    | **Diabetes Pedigree Function** | < 0.500 | ≥ 0.500 |
-    | **Age** (Umur) | < 30 tahun | ≥ 30 tahun |
-    
-    > *Catatan: Model AI menganalisis kombinasi dari semua fitur di atas secara bersamaan (multivariat), bukan hanya satu fitur tunggal. Nilai di ambang batas yang disertai faktor risiko lain akan secara signifikan meningkatkan skor probabilitas prediksi.*
-    """)
+    st.subheader("Panduan & Acuan Pembanding Medis")
+    st.info("Pilih tab di bawah untuk melihat acuan medis internasional (WHO) atau profil statistik dataset pelatihan AI:")
+
+    # Menggunakan fitur Tab agar tampilan rapi
+    tab1, tab2 = st.tabs(["📋 Tabel 1: Acuan WHO/ADA", "📊 Tabel 2: Statistik Dataset PIMA"])
+
+    with tab1:
+        st.markdown("**Standar Klinis Internasional (WHO / ADA)**")
+        st.markdown("""
+        | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
+        | :--- | :--- | :--- |
+        | **Pregnancies** | 0 - 3 kali | ≥ 4 kali |
+        | **Glucose** | < 140 mg/dL | ≥ 140 mg/dL |
+        | **Blood Pressure** | < 80 mmHg | ≥ 80 mmHg |
+        | **Skin Thickness** | < 30 mm | ≥ 30 mm |
+        | **Insulin** | < 160 mIU/L | ≥ 160 mIU/L |
+        | **BMI** | < 25.0 kg/m² | ≥ 25.0 kg/m² |
+        | **Diabetes Pedigree** | < 0.500 | ≥ 0.500 |
+        | **Age** | < 30 tahun | ≥ 30 tahun |
+        
+        > *Panduan univariat medis untuk indikator tunggal.*
+        """)
+
+    with tab2:
+        st.markdown("**Profil Statistik Dataset Penelitian (744 Data PIMA)**")
+        st.markdown("""
+        | Fitur Medis | Rata-rata (Mean) | Standar Deviasi | Nilai Min - Max |
+        | :--- | :--- | :--- | :--- |
+        | **Pregnancies** | 3.8 kali | 3.3 | 0 - 17 kali |
+        | **Glucose** | 121.7 mg/dL | 30.5 | 44 - 199 mg/dL |
+        | **Blood Pressure** | 72.4 mmHg | 12.1 | 24 - 122 mmHg |
+        | **Skin Thickness** | 29.2 mm | 8.9 | 7 - 99 mm |
+        | **Insulin** | 141.8 mIU/L | 86.2 | 14 - 846 mIU/L |
+        | **BMI** | 32.5 kg/m² | 6.9 | 18.2 - 67.1 kg/m² |
+        | **Diabetes Pedigree** | 0.472 | 0.33 | 0.078 - 2.420 |
+        | **Age** | 33.2 tahun | 11.8 | 21 - 81 tahun |
+        
+        > *Pola statistik riil yang dipelajari oleh model Naive Bayes secara multivariat.*
+        """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
 if submit:
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
     
-    # 1. Feature Scaling steril menggunakan objek scaler dari pickle
+    # 1. Feature Scaling steril
     features_scaled = scaler.transform(input_df)
     
     # 2. Prediksi Klasifikasi dan Probabilitas
     prediction = model.predict(features_scaled)[0]
     probabilities = model.predict_proba(features_scaled)[0]
-    prob_positif = probabilities[1] * 100  # Peluang Diabetes (%)
+    prob_positif = probabilities[1] * 100
     
     st.write("---")
     st.subheader("Hasil Analisis Model Sistem")
     
-    # Tampilkan persentase probabilitas
     st.metric(label="Estimasi Tingkat Probabilitas Risiko Diabetes", value=f"{prob_positif:.1f}%")
     
     if prediction == 1:
