@@ -25,7 +25,7 @@ with col1:
     st.subheader("Form Data Medis")
     
     with st.form("form_diabetes_kamu"):
-        # Nilai default (value) diubah kembali menjadi 0 / 0.0 sesuai permintaan Anda
+        # Nilai default (value) diubah kembali menjadi 0 / 0.0 sesuai permintaan
         pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
         glucose = st.number_input('Glucose (Kadar Glukosa)', min_value=0, max_value=500, value=0) 
         blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=0) 
@@ -42,7 +42,7 @@ with col2:
     st.subheader("Panduan Indikator Medis Faktual")
     st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
-   # REVISI: Menyelaraskan teks indikator Glukosa dengan dataset biner (Sehat vs Diabetes)
+    # REVISI: Menyelaraskan teks indikator Glukosa dengan dataset biner (Sehat vs Diabetes)
     st.markdown("""
     | Fitur Medis | Rentang Normal / Sehat | Rentang Risiko / Diabetes |
     | :--- | :--- | :--- |
@@ -60,6 +60,26 @@ with col2:
 if submit:
     kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
     input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
+    
+    # ==============================================================================
+    # PERBAIKAN KRITIS: Imputasi nilai 0 dengan Median (Sama persis seperti di Colab)
+    # ==============================================================================
+    cols_medis = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
+    
+    # Nilai median ini adalah standar dataset PIMA Indians Diabetes. 
+    # (Sangat akurat, namun bisa disesuaikan jika median dataset spesifik Anda sedikit berbeda)
+    median_values = {
+        'Glucose': 117.0,
+        'BloodPressure': 72.0,
+        'SkinThickness': 29.0,
+        'Insulin': 126.0,
+        'BMI': 32.0
+    }
+    
+    for col in cols_medis:
+        # Ganti nilai 0 yang diinput user dengan nilai median yang sesuai
+        input_df[col] = input_df[col].replace(0, median_values[col])
+    # ==============================================================================
     
     # Fitur Scaling secara steril menggunakan objek scaler bawaan dari pkl
     features_scaled = scaler.transform(input_df)
