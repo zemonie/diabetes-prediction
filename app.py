@@ -7,7 +7,7 @@ import pandas as pd
 st.set_page_config(layout="wide")
 
 # 1. LOAD MODEL & SCALER STERIL
-with open('diabetes_prediction.pkl', 'rb') as f:
+with open('diabetes_prediction_KNN.pkl', 'rb') as f:
     model_bundle = pickle.load(f)
 
 model = model_bundle["model"]
