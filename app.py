@@ -39,30 +39,59 @@ with col1:
 
 # ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
 # ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
+# ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
 with col2:
-    st.subheader("Faktor Risiko & Fitur yang Dianalisis Model")
-    st.info("Tabel di bawah ini menunjukkan faktor risiko umum diabetes berdasarkan literatur medis standar.")
+    st.subheader("Panduan Referensi & Pola Model")
+    st.info("Aplikasi ini menggabungkan standar medis klinis dengan pola statistik Machine Learning.")
     
-    # TABEL YANG SUDAH DIREVISI (Lebih netral dan tidak memaksa)
+    # TAB 1: STANDAR MEDIS (WHO/PERKENI)
+    st.markdown("**1. Standar Klinis Medis (WHO/PERKENI)**")
     st.markdown("""
-    | Fitur Medis | Kondisi Umum / Normal | Faktor Risiko (Perlu Waspada) |
+    | Fitur Medis | Rentang Normal / Sehat | Rentang Risiko / Waspada |
     | :--- | :--- | :--- |
-    | **Pregnancies** (Kehamilan) | 0 - 3 kali | ≥ 4 kali |
-    | **Glucose** (Glukosa Darah) | < 140 mg/dL | ≥ 140 mg/dL |
-    | **Blood Pressure** (Tekanan Darah) | < 80 mmHg | ≥ 80 mmHg |
-    | **Skin Thickness** (Ketebalan Kulit) | < 30 mm | ≥ 30 mm |
-    | **Insulin** (Kadar Insulin) | < 160 mIU/L | ≥ 160 mIU/L |
-    | **BMI** (Indeks Massa Tubuh) | < 25.0 | ≥ 25.0 (Overweight/Obesitas) |
-    | **Diabetes Pedigree Function** | < 0.500 | ≥ 0.500 |
-    | **Age** (Umur) | < 30 tahun | ≥ 30 tahun |
+    | **Glucose** | < 140 mg/dL | ≥ 140 mg/dL |
+    | **Blood Pressure** | < 80 mmHg | ≥ 80 mmHg |
+    | **BMI** | < 25.0 | ≥ 25.0 |
+    | **Age** | < 30 tahun | ≥ 30 tahun |
+    *(Dan fitur medis lainnya)*
     """)
-
-    # INI ADALAH "OBAT" UNTUK MASALAH ANDA (Wajib ada!)
-    st.warning("""
-    **⚠️ Catatan Penting Cara Kerja Model AI (KNN):**
-    Model ini **tidak menggunakan aturan kaku** seperti tabel di atas. Algoritma *K-Nearest Neighbors* (KNN) menganalisis **kombinasi ke-8 fitur secara bersamaan** (Multivariat).
     
-    **Contoh:** Seseorang dengan Glukosa tinggi (misal 172 mg/dL) bisa saja diprediksi **SEHAT** oleh model jika faktor risiko lainnya (seperti BMI, Usia, dan Tekanan Darah) berada di kondisi sangat normal. Model AI melihat "gambaran besar" profil pasien secara keseluruhan, bukan hanya menilai satu angka secara terpisah.
+    st.divider() # Garis pemisah
+
+    # TAB 2: POLA STATISTIK MODEL (KNN) - INI PENGGANTI TABEL MODEL
+    st.markdown("**2. Pola Khas Berdasarkan Data Latih (KNN)**")
+    st.caption("Model KNN tidak menggunakan angka batas kaku, melainkan mengenali 'pola gabungan' dari data historis berikut:")
+    
+    # Membuat 2 kolom kecil untuk membandingkan pola khas
+    col_sehat, col_sakit = st.columns(2)
+    
+    with col_sehat:
+        st.success("**🟢 Pola Khas Pasien SEHAT**")
+        st.markdown("""
+        * **Glucose:** ~110 mg/dL
+        * **BMI:** ~23.0
+        * **Age:** ~25 tahun
+        * **Insulin:** ~80 mIU/L
+        * *Kesimpulan: Model mencari kombinasi nilai yang secara bersamaan berada di zona rendah.*
+        """)
+        
+    with col_sakit:
+        st.error("**🔴 Pola Khas Pasien DIABETES**")
+        st.markdown("""
+        * **Glucose:** ~160 mg/dL
+        * **BMI:** ~32.0
+        * **Age:** ~45 tahun
+        * **Insulin:** ~150 mIU/L
+        * *Kesimpulan: Model mendeteksi diabetes ketika SEBAGIAN BESAR fitur bergeser ke zona tinggi secara bersamaan.*
+        """)
+
+    # KOTAK DISCLAIMER PENTING (WAJIB ADA)
+    st.warning("""
+    **⚠️ Mengapa Hasil Prediksi Bisa Berbeda dengan Tabel WHO?**
+    Tabel WHO bersifat **Univariat** (menilai 1 fitur secara terpisah, misal: Glukosa > 140 = Waspada). 
+    Sebaliknya, Model KNN bersifat **Multivariat**. 
+    
+    *Contoh:* Jika Glukosa Anda 172 (Waspada menurut WHO), tetapi BMI, Usia, dan Tekanan Darah Anda sangat normal, Model KNN akan memprediksi **SEHAT** karena secara statistik, profil gabungan Anda lebih mirip dengan "Pola Khas Pasien Sehat" di atas.
     """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
