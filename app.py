@@ -42,18 +42,20 @@ with col2:
     st.subheader("Panduan Indikator Medis Faktual")
     st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
-    # REVISI: Menyelaraskan teks indikator Glukosa dengan dataset biner (Sehat vs Diabetes)
+    # REVISI: Menyesuaikan ambang batas agar lebih akurat dengan karakteristik dataset dan logika model multivariat
     st.markdown("""
-    | Fitur Medis | Rentang Normal / Sehat | Rentang Risiko / Diabetes |
+    | Fitur Medis | Rentang Rendah Risiko | Rentang Perlu Diwaspadai (Risiko) |
     | :--- | :--- | :--- |
     | **Pregnancies** (Jumlah Kehamilan) | 0 - 3 kali | ≥ 4 kali |
-    | **Glucose** (Glukosa Darah 2 Jam Pasca Makan) | < 200 mg/dL | ≥ 200 mg/dL (Indikasi Diabetes) |
-    | **Blood Pressure** (Tekanan Darah Diastolik) | < 80 mmHg | ≥ 80 mmHg (Hipertensi) |
-    | **Skin Thickness** (Ketebalan Kulit Trisep) | 10 - 29 mm | ≥ 30 mm (Akumulasi Lemak) |
-    | **Insulin** (Kadar Insulin 2 Jam) | < 160 mIU/L | ≥ 160 mIU/L (Resistensi Insulin) |
-    | **BMI** (Indeks Massa Tubuh) | 18.5 - 24.9 | 25.0 - 29.9 (Overweight) \| ≥ 30.0 (Obesitas) |
-    | **Diabetes Pedigree Function** (Skor Genetik) | < 0.500 | ≥ 0.500 (Riwayat Keluarga Kuat) |
-    | **Age** (Umur) | 21 - 30 tahun | > 30 tahun (Metabolisme Menurun) |
+    | **Glucose** (Kadar Glukosa) | < 140 mg/dL | ≥ 140 mg/dL (Waspada) / ≥ 200 mg/dL (Risiko Tinggi) |
+    | **Blood Pressure** (Tekanan Darah) | < 80 mmHg | ≥ 80 mmHg |
+    | **Skin Thickness** (Ketebalan Kulit) | < 30 mm | ≥ 30 mm |
+    | **Insulin** (Kadar Insulin) | < 160 mIU/L | ≥ 160 mIU/L |
+    | **BMI** (Indeks Massa Tubuh) | < 25.0 | ≥ 25.0 (Overweight/Obesitas) |
+    | **Diabetes Pedigree Function** | < 0.500 | ≥ 0.500 |
+    | **Age** (Umur) | < 30 tahun | ≥ 30 tahun |
+    
+    > *Catatan: Model AI menganalisis kombinasi dari semua fitur di atas secara bersamaan (multivariat), bukan hanya satu fitur tunggal. Nilai di ambang batas (misal: Glukosa 170-an) yang disertai faktor risiko lain akan secara signifikan meningkatkan skor prediksi.*
     """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
@@ -67,7 +69,6 @@ if submit:
     cols_medis = ['Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI']
     
     # Nilai median ini adalah standar dataset PIMA Indians Diabetes. 
-    # (Sangat akurat, namun bisa disesuaikan jika median dataset spesifik Anda sedikit berbeda)
     median_values = {
         'Glucose': 117.0,
         'BloodPressure': 72.0,
