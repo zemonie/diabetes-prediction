@@ -13,7 +13,7 @@ with open('diabetes_prediction.pkl', 'rb') as f:
 model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
-st.title("Aplikasi Prediksi Diabetes - Algoritma Support Vector Machine")
+st.title("Aplikasi Prediksi Diabetes - Algoritma K-Nearest Neighbors")
 st.write("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
 st.write("---")
 
