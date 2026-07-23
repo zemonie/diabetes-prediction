@@ -74,7 +74,7 @@ if submit:
         'BloodPressure': 72.0,
         'SkinThickness': 29.0,
         'Insulin': 126.0,
-        'BMI': 32.0
+        'BMI': 32.4  
     }
     
     for col in cols_medis:
