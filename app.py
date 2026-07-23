@@ -42,10 +42,10 @@ with col1:
 # ==================== KOLOM 2: DUA TABEL INDIKATOR ACUAN ====================
 with col2:
     st.subheader("Panduan & Acuan Pembanding Medis")
-    st.info("Pilih tab di bawah untuk melihat acuan medis internasional (WHO) atau rentang statistik dataset pelatihan AI:")
+    st.info("Pilih tab di bawah untuk melihat acuan medis internasional (WHO) atau rentang ambang batas riil model AI:")
 
-    # Menggunakan fitur Tab agar tampilan rapi & interaktif
-    tab1, tab2 = st.tabs(["📋 Tabel 1: Acuan WHO/ADA", "📊 Tabel 2: Statistik Dataset PIMA"])
+    # Menggunakan fitur Tab agar tampilan rapi
+    tab1, tab2 = st.tabs(["📋 Tabel 1: Acuan WHO/ADA", "📊 Tabel 2: Ambar Batas Model AI Kita"])
 
     with tab1:
         st.markdown("**Standar Klinis Internasional (WHO / ADA)**")
@@ -61,24 +61,24 @@ with col2:
         | **Diabetes Pedigree** | < 0.500 | ≥ 0.500 |
         | **Age** | < 30 tahun | ≥ 30 tahun |
         
-        > *Catatan: Acuan standar klinis internasional univariat (indikator tunggal).*
+        > *Catatan: Standar acuan medis klinis univariat.*
         """)
 
     with tab2:
-        st.markdown("**Profil Statistik Dataset Penelitian (Data PIMA Indians)**")
+        st.markdown("**Batas Toleransi Keputusan Model Naive Bayes (Sistem)**")
         st.markdown("""
         | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
         | :--- | :--- | :--- |
-        | **Pregnancies** | 0 - 3 kali (Rata-rata: 3.8) | 4 - 17 kali |
-        | **Glucose** | 44 - 139 mg/dL (Rata-rata: 121.7) | 140 - 199 mg/dL |
-        | **Blood Pressure** | 24 - 79 mmHg (Rata-rata: 72.4) | 80 - 122 mmHg |
-        | **Skin Thickness** | 7 - 29 mm (Rata-rata: 29.2) | 30 - 99 mm |
-        | **Insulin** | 14 - 159 mIU/L (Rata-rata: 141.8) | 160 - 846 mIU/L |
-        | **BMI** | 18.2 - 24.9 kg/m² (Rata-rata: 32.5) | 25.0 - 67.1 kg/m² |
-        | **Diabetes Pedigree** | 0.078 - 0.499 (Rata-rata: 0.472) | 0.500 - 2.420 |
-        | **Age** | 21 - 29 tahun (Rata-rata: 33.2) | 30 - 81 tahun |
+        | **Pregnancies** | ≤ 5 kali | > 5 kali |
+        | **Glucose** | ≤ 160 mg/dL | > 160 mg/dL |
+        | **Blood Pressure** | ≤ 80 mmHg | > 80 mmHg |
+        | **Skin Thickness** | ≤ 30 mm | > 30 mm |
+        | **Insulin** | ≤ 160 mIU/L | > 160 mIU/L |
+        | **BMI** | ≤ 25.5 kg/m² | > 25.5 kg/m² |
+        | **Diabetes Pedigree** | ≤ 0.500 | > 0.500 |
+        | **Age** | ≤ 30 tahun | > 30 tahun |
         
-        > *Catatan: Sebaran nilai riil dari 744 sampel data penderita yang dipelajari oleh Naive Bayes.*
+        > *Catatan: Nilai pada kolom 'Normal / Rendah Risiko' di atas merupakan batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%). Jika kombinasi fitur melebihi angka tersebut, model akan mengklasifikasikannya sebagai POSITIF.*
         """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
