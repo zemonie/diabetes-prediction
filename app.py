@@ -38,60 +38,24 @@ with col1:
         submit = st.form_submit_button("Proses Analisis Medis")
 
 # ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
-# ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
-# ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
 with col2:
-    st.subheader("Panduan Referensi & Pola Model")
-    st.info("Aplikasi ini menggabungkan standar medis klinis dengan pola statistik Machine Learning.")
+    st.subheader("Panduan Indikator Medis Faktual")
+    st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
     
-    # TAB 1: STANDAR MEDIS (WHO/PERKENI)
-    st.markdown("**1. Standar Klinis Medis (WHO/PERKENI)**")
+    # REVISI: Menyesuaikan ambang batas agar lebih akurat dengan karakteristik dataset dan logika model multivariat
     st.markdown("""
-    | Fitur Medis | Rentang Normal / Sehat | Rentang Risiko / Waspada |
+    | Fitur Medis | Rentang Rendah Risiko | Rentang Perlu Diwaspadai (Risiko) |
     | :--- | :--- | :--- |
-    | **Glucose** | < 140 mg/dL | ≥ 140 mg/dL |
-    | **Blood Pressure** | < 80 mmHg | ≥ 80 mmHg |
-    | **BMI** | < 25.0 | ≥ 25.0 |
-    | **Age** | < 30 tahun | ≥ 30 tahun |
-    *(Dan fitur medis lainnya)*
-    """)
+    | **Pregnancies** (Jumlah Kehamilan) | 0 - 3 kali | ≥ 4 kali |
+    | **Glucose** (Kadar Glukosa) | < 140 mg/dL | ≥ 140 mg/dL (Waspada) / ≥ 200 mg/dL (Risiko Tinggi) |
+    | **Blood Pressure** (Tekanan Darah) | < 80 mmHg | ≥ 80 mmHg |
+    | **Skin Thickness** (Ketebalan Kulit) | < 30 mm | ≥ 30 mm |
+    | **Insulin** (Kadar Insulin) | < 160 mIU/L | ≥ 160 mIU/L |
+    | **BMI** (Indeks Massa Tubuh) | < 25.0 | ≥ 25.0 (Overweight/Obesitas) |
+    | **Diabetes Pedigree Function** | < 0.500 | ≥ 0.500 |
+    | **Age** (Umur) | < 30 tahun | ≥ 30 tahun |
     
-    st.divider() # Garis pemisah
-
-    # TAB 2: POLA STATISTIK MODEL (KNN) - INI PENGGANTI TABEL MODEL
-    st.markdown("**2. Pola Khas Berdasarkan Data Latih (KNN)**")
-    st.caption("Model KNN tidak menggunakan angka batas kaku, melainkan mengenali 'pola gabungan' dari data historis berikut:")
-    
-    # Membuat 2 kolom kecil untuk membandingkan pola khas
-    col_sehat, col_sakit = st.columns(2)
-    
-    with col_sehat:
-        st.success("**🟢 Pola Khas Pasien SEHAT**")
-        st.markdown("""
-        * **Glucose:** ~110 mg/dL
-        * **BMI:** ~23.0
-        * **Age:** ~25 tahun
-        * **Insulin:** ~80 mIU/L
-        * *Kesimpulan: Model mencari kombinasi nilai yang secara bersamaan berada di zona rendah.*
-        """)
-        
-    with col_sakit:
-        st.error("**🔴 Pola Khas Pasien DIABETES**")
-        st.markdown("""
-        * **Glucose:** ~160 mg/dL
-        * **BMI:** ~32.0
-        * **Age:** ~45 tahun
-        * **Insulin:** ~150 mIU/L
-        * *Kesimpulan: Model mendeteksi diabetes ketika SEBAGIAN BESAR fitur bergeser ke zona tinggi secara bersamaan.*
-        """)
-
-    # KOTAK DISCLAIMER PENTING (WAJIB ADA)
-    st.warning("""
-    **⚠️ Mengapa Hasil Prediksi Bisa Berbeda dengan Tabel WHO?**
-    Tabel WHO bersifat **Univariat** (menilai 1 fitur secara terpisah, misal: Glukosa > 140 = Waspada). 
-    Sebaliknya, Model KNN bersifat **Multivariat**. 
-    
-    *Contoh:* Jika Glukosa Anda 172 (Waspada menurut WHO), tetapi BMI, Usia, dan Tekanan Darah Anda sangat normal, Model KNN akan memprediksi **SEHAT** karena secara statistik, profil gabungan Anda lebih mirip dengan "Pola Khas Pasien Sehat" di atas.
+    > *Catatan: Model AI menganalisis kombinasi dari semua fitur di atas secara bersamaan (multivariat), bukan hanya satu fitur tunggal. Nilai di ambang batas (misal: Glukosa 170-an) yang disertai faktor risiko lain akan secara signifikan meningkatkan skor prediksi.*
     """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
@@ -142,3 +106,4 @@ if submit:
         * Jaga berat badan ideal agar Indeks Massa Tubuh (BMI) tetap berada dalam rentang normal (18.5 - 24.9).
         * Lakukan aktivitas fisik atau olahraga rutin minimal 150 menit per minggu sesuai anjuran WHO.
         """)
+
