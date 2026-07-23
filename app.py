@@ -38,24 +38,31 @@ with col1:
         submit = st.form_submit_button("Proses Analisis Medis")
 
 # ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
+# ==================== KOLOM 2: TABEL INDIKATOR REFERENSI ====================
 with col2:
-    st.subheader("Panduan Indikator Medis Faktual")
-    st.info("Gunakan tabel referensi di bawah ini sebagai panduan standar internasional (WHO/ADA) saat mengisi form:")
+    st.subheader("Faktor Risiko & Fitur yang Dianalisis Model")
+    st.info("Tabel di bawah ini menunjukkan faktor risiko umum diabetes berdasarkan literatur medis standar.")
     
-    # REVISI: Menyesuaikan ambang batas agar lebih akurat dengan karakteristik dataset dan logika model multivariat
+    # TABEL YANG SUDAH DIREVISI (Lebih netral dan tidak memaksa)
     st.markdown("""
-    | Fitur Medis | Rentang Rendah Risiko | Rentang Perlu Diwaspadai (Risiko) |
+    | Fitur Medis | Kondisi Umum / Normal | Faktor Risiko (Perlu Waspada) |
     | :--- | :--- | :--- |
-    | **Pregnancies** (Jumlah Kehamilan) | 0 - 3 kali | ≥ 4 kali |
-    | **Glucose** (Kadar Glukosa) | < 140 mg/dL | ≥ 140 mg/dL (Waspada) / ≥ 200 mg/dL (Risiko Tinggi) |
+    | **Pregnancies** (Kehamilan) | 0 - 3 kali | ≥ 4 kali |
+    | **Glucose** (Glukosa Darah) | < 140 mg/dL | ≥ 140 mg/dL |
     | **Blood Pressure** (Tekanan Darah) | < 80 mmHg | ≥ 80 mmHg |
     | **Skin Thickness** (Ketebalan Kulit) | < 30 mm | ≥ 30 mm |
     | **Insulin** (Kadar Insulin) | < 160 mIU/L | ≥ 160 mIU/L |
     | **BMI** (Indeks Massa Tubuh) | < 25.0 | ≥ 25.0 (Overweight/Obesitas) |
     | **Diabetes Pedigree Function** | < 0.500 | ≥ 0.500 |
     | **Age** (Umur) | < 30 tahun | ≥ 30 tahun |
+    """)
+
+    # INI ADALAH "OBAT" UNTUK MASALAH ANDA (Wajib ada!)
+    st.warning("""
+    **⚠️ Catatan Penting Cara Kerja Model AI (KNN):**
+    Model ini **tidak menggunakan aturan kaku** seperti tabel di atas. Algoritma *K-Nearest Neighbors* (KNN) menganalisis **kombinasi ke-8 fitur secara bersamaan** (Multivariat).
     
-    > *Catatan: Model AI menganalisis kombinasi dari semua fitur di atas secara bersamaan (multivariat), bukan hanya satu fitur tunggal. Nilai di ambang batas (misal: Glukosa 170-an) yang disertai faktor risiko lain akan secara signifikan meningkatkan skor prediksi.*
+    **Contoh:** Seseorang dengan Glukosa tinggi (misal 172 mg/dL) bisa saja diprediksi **SEHAT** oleh model jika faktor risiko lainnya (seperti BMI, Usia, dan Tekanan Darah) berada di kondisi sangat normal. Model AI melihat "gambaran besar" profil pasien secara keseluruhan, bukan hanya menilai satu angka secara terpisah.
     """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
