@@ -39,13 +39,40 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis")
 
-# ==================== KOLOM 2: DUA TABEL DILANGSUNGKAN TANPA TOMBOL ====================
+# ==================== KOLOM 2: DUA TABEL RINGKAS (COMPACT) ====================
 with col2:
     st.subheader("Panduan & Acuan Pembanding Medis")
     st.info("Berikut adalah acuan medis standar internasional serta ambang batas keputusan model AI:")
 
+    # Style CSS Khusus untuk Merapatkan dan Memperkecil Ukuran Tabel
+    st.markdown("""
+        <style>
+        /* Merapatkan padding sel tabel dan memperkecil huruf */
+        table {
+            font-size: 13px !important;
+            margin-bottom: 5px !important;
+        }
+        th, td {
+            padding: 4px 8px !important;
+        }
+        /* Memperkecil heading dan catatan di bawah tabel */
+        .small-header {
+            font-size: 15px !important;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 2px;
+        }
+        .small-note {
+            font-size: 11px !important;
+            color: #555555;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     # TABEL 1: ACUAN WHO
-    st.markdown("### 📋 TABEL 1: ACUAN WHO / ADA")
+    st.markdown('<p class="small-header">📋 TABEL 1: ACUAN WHO / ADA</p>', unsafe_allow_html=True)
     st.markdown("""
     | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
     | :--- | :--- | :--- |
@@ -57,14 +84,11 @@ with col2:
     | **BMI** | < 25.0 kg/m² | ≥ 25.0 kg/m² |
     | **Diabetes Pedigree** | < 0.500 | ≥ 0.500 |
     | **Age** | < 30 tahun | ≥ 30 tahun |
-    
-    > *Catatan: Standar acuan medis klinis univariat.*
     """)
-
-    st.write("---")
+    st.markdown('<p class="small-note">*Catatan: Standar acuan medis klinis univariat.</p>', unsafe_allow_html=True)
 
     # TABEL 2: AMBANG BATAS AI
-    st.markdown("### 📊 TABEL 2: AMBANG BATAS MODEL AI KITA")
+    st.markdown('<p class="small-header">📊 TABEL 2: AMBANG BATAS MODEL AI KITA</p>', unsafe_allow_html=True)
     st.markdown("""
     | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
     | :--- | :--- | :--- |
@@ -76,9 +100,8 @@ with col2:
     | **BMI** | ≤ 25.5 kg/m² | > 25.5 kg/m² |
     | **Diabetes Pedigree** | ≤ 0.500 | > 0.500 |
     | **Age** | ≤ 30 tahun | > 30 tahun |
-    
-    > *Catatan: Nilai pada kolom 'Normal / Rendah Risiko' di atas merupakan batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%). Jika kombinasi fitur melebihi angka tersebut, model akan mengklasifikasikannya sebagai POSITIF.*
     """)
+    st.markdown('<p class="small-note">*Catatan: Batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%).</p>', unsafe_allow_html=True)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
 if submit:
