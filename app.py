@@ -79,24 +79,35 @@ with col1:
     with st.form("form_diabetes_kamu"):
         f_col1, f_col2 = st.columns(2)
         
+        # Penggunaan value=None dan placeholder membuat 0/0.0 langsung tertimpa saat diklik
         with f_col1:
-            pregnancies = st.number_input('Pregnancies (Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-            glucose = st.number_input('Glucose (Glukosa mg/dL)', min_value=0, max_value=500, value=0) 
-            blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=0) 
-            skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=0)
+            pregnancies = st.number_input('Pregnancies (Kehamilan)', min_value=0, max_value=20, step=1, value=None, placeholder="0")
+            glucose = st.number_input('Glucose (Glukosa mg/dL)', min_value=0, max_value=500, value=None, placeholder="0") 
+            blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=None, placeholder="0") 
+            skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=None, placeholder="0")
             
         with f_col2:
-            insulin = st.number_input('Insulin (mIU/L)', min_value=0, max_value=900, value=0) 
-            bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=0.0)
-            dpf = st.number_input('Diabetes Pedigree (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.000)
-            age = st.number_input('Age (Umur Tahun)', min_value=0, max_value=120, step=1, value=0)
+            insulin = st.number_input('Insulin (mIU/L)', min_value=0, max_value=900, value=None, placeholder="0") 
+            bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=None, placeholder="0.0")
+            dpf = st.number_input('Diabetes Pedigree (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=None, placeholder="0.000")
+            age = st.number_input('Age (Umur Tahun)', min_value=0, max_value=120, step=1, value=None, placeholder="0")
         
         submit = st.form_submit_button("Proses Analisis Medis", use_container_width=True)
 
     # OUTPUT HASIL PREDIKSI
     if submit:
+        # Menangani nilai masukan jika kolom dibiarkan kosong (otomatis dianggap 0 / 0.0)
+        p_val = pregnancies if pregnancies is not None else 0
+        g_val = glucose if glucose is not None else 0
+        bp_val = blood_pressure if blood_pressure is not None else 0
+        st_val = skin_thickness if skin_thickness is not None else 0
+        ins_val = insulin if insulin is not None else 0
+        bmi_val = bmi if bmi is not None else 0.0
+        dpf_val = dpf if dpf is not None else 0.000
+        age_val = age if age is not None else 0
+
         kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
-        input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
+        input_df = pd.DataFrame([[p_val, g_val, bp_val, st_val, ins_val, bmi_val, dpf_val, age_val]], columns=kolom_asli)
         
         # 1. Feature Scaling steril
         features_scaled = scaler.transform(input_df)
@@ -140,7 +151,7 @@ with col1:
             
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ==================== KOLOM 2: TABEL ACUAN PEMBANDING (DIBALIK) ====================
+# ==================== KOLOM 2: TABEL ACUAN PEMBANDING ====================
 with col2:
     st.markdown("<h4 style='margin-bottom: 4px; margin-top: 0px;'>Panduan & Acuan Pembanding Medis</h4>", unsafe_allow_html=True)
     st.info("Berikut acuan medis internasional & ambang batas keputusan model AI:")
