@@ -42,10 +42,46 @@ with col1:
 # ==================== KOLOM 2: DUA TABEL INDIKATOR ACUAN ====================
 with col2:
     st.subheader("Panduan & Acuan Pembanding Medis")
-    st.info("Pilih tab di bawah untuk melihat acuan medis internasional (WHO) atau rentang ambang batas riil model AI:")
+    st.info("Pilih tombol acuan di bawah ini untuk melihat detailnya:")
 
-    # Menggunakan fitur Tab agar tampilan rapi
-    tab1, tab2 = st.tabs(["📋 Tabel 1: Acuan WHO/ADA", "📊 Tabel 2: Ambar Batas Model AI Kita"])
+    # Style CSS Khusus untuk Mengubah Tab Menjadi Tombol Besar & Menarik
+    st.markdown("""
+        <style>
+        /* Mengubah styling container tab menjadi gaya tombol */
+        div[data-baseweb="tab-list"] {
+            gap: 12px;
+        }
+        div[data-baseweb="tab"] {
+            background-color: #f0f2f6;
+            border-radius: 8px;
+            padding: 12px 20px !important;
+            font-weight: bold !important;
+            font-size: 16px !important;
+            border: 1px solid #d6d6d6;
+            transition: all 0.3s ease;
+        }
+        /* Efek saat kursor diarahkan ke tombol (Hover) */
+        div[data-baseweb="tab"]:hover {
+            background-color: #e0e2e6;
+            border-color: #b0b0b0;
+            cursor: pointer;
+        }
+        /* Style untuk tombol Tab yang sedang AKTIF/DIPILIH */
+        div[data-baseweb="tab"][aria-selected="true"] {
+            background-color: #ff4b4b !important; /* Warna merah Streamlit (bisa ganti sesuai selera) */
+            color: white !important;
+            border-color: #ff4b4b !important;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        /* Memastikan teks di dalam tab aktif berwarna putih */
+        div[data-baseweb="tab"][aria-selected="true"] p {
+            color: white !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # Menggunakan tab yang sudah ditransformasi menjadi tombol besar
+    tab1, tab2 = st.tabs(["📋 TABEL 1: ACUAN WHO / ADA", "📊 TABEL 2: AMBANG BATAS MODEL AI KITA"])
 
     with tab1:
         st.markdown("**Standar Klinis Internasional (WHO / ADA)**")
