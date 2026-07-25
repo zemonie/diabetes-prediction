@@ -41,32 +41,33 @@ with col1:
 
 # ==================== KOLOM 2: DUA TABEL RINGKAS (COMPACT) ====================
 with col2:
-    st.subheader("Panduan & Acuan Pembanding Medis")
-    st.info("Berikut adalah acuan medis standar internasional serta ambang batas keputusan model AI:")
+    # Menggunakan HTML/CSS untuk memperkecil judul section dan teks info
+    st.markdown('<h4 style="margin-bottom: 2px; font-size: 18px;">Panduan & Acuan Pembanding Medis</h4>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 12px; color: #1e4620; background-color: #d1e7dd; padding: 6px 10px; border-radius: 5px; margin-bottom: 8px;">Berikut adalah acuan medis standar internasional serta ambang batas keputusan model AI:</p>', unsafe_allow_html=True)
 
     # Style CSS Khusus untuk Merapatkan dan Memperkecil Ukuran Tabel
     st.markdown("""
         <style>
         /* Merapatkan padding sel tabel dan memperkecil huruf */
         table {
-            font-size: 13px !important;
-            margin-bottom: 5px !important;
+            font-size: 12px !important;
+            margin-bottom: 4px !important;
         }
         th, td {
-            padding: 4px 8px !important;
+            padding: 3px 6px !important;
         }
         /* Memperkecil heading dan catatan di bawah tabel */
         .small-header {
-            font-size: 15px !important;
+            font-size: 14px !important;
             font-weight: bold;
-            margin-top: 5px;
+            margin-top: 4px;
             margin-bottom: 2px;
         }
         .small-note {
-            font-size: 11px !important;
+            font-size: 10px !important;
             color: #555555;
-            margin-top: -5px;
-            margin-bottom: 10px;
+            margin-top: -3px;
+            margin-bottom: 8px;
         }
         </style>
     """, unsafe_allow_html=True)
