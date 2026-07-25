@@ -6,7 +6,7 @@ import pandas as pd
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
 
-# STYLING GLOBAL CSS FIX - PRESISI 1 LAYAR
+# STYLING GLOBAL CSS FIX - CLEAN CARD DESIGN
 st.markdown("""
     <style>
     /* 1. Atur padding utama halaman */
@@ -30,16 +30,32 @@ st.markdown("""
         margin-bottom: -6px !important;
     }
     
-    /* 4. Rapatkan blok metric & alert hasil agar naik ke atas */
-    div[data-testid="stMetric"] {
-        padding: 0px !important;
-        margin-top: -5px !important;
-        margin-bottom: -5px !important;
+    /* 4. Styling Card Output Prediksi agar Rapi & Elegan */
+    .result-card {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px 15px;
+        margin-top: 6px;
     }
-    .stAlert {
-        padding: 8px 12px !important;
-        margin-top: 4px !important;
-        margin-bottom: 4px !important;
+    .result-header {
+        font-size: 15px;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 4px;
+    }
+    .rec-title {
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+        margin-top: 6px;
+        margin-bottom: 2px;
+    }
+    .rec-list {
+        font-size: 11px;
+        color: #495057;
+        margin: 0;
+        padding-left: 15px;
     }
     
     /* 5. Formatting Tabel di Kolom Kanan */
@@ -104,7 +120,7 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis", use_container_width=True)
 
-    # OUTPUT HASIL PREDIKSI (LANGSUNG NAIK Tepat Di Bawah Form)
+    # OUTPUT HASIL PREDIKSI (DESAIN CARD CLEAN & RAPI)
     if submit:
         kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
         input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
@@ -117,15 +133,37 @@ with col1:
         probabilities = model.predict_proba(features_scaled)[0]
         prob_positif = probabilities[1] * 100
         
-        st.markdown("<h4 style='margin-top: 6px; margin-bottom: 2px;'>Hasil Analisis Model Sistem</h4>", unsafe_allow_html=True)
-        st.metric(label="Estimasi Tingkat Probabilitas Risiko Diabetes", value=f"{prob_positif:.1f}%")
+        # Bungkusan Card Hasil
+        st.markdown('<div class="result-card">', unsafe_allow_html=True)
         
+        # Header + Probabilitas Sejajar
+        res_col1, res_col2 = st.columns([3, 2])
+        with res_col1:
+            st.markdown('<div class="result-header">Hasil Analisis Model Sistem</div>', unsafe_allow_html=True)
+        with res_col2:
+            st.metric(label="Probabilitas Risiko", value=f"{prob_positif:.1f}%")
+        
+        # Status Diagnosa
         if prediction == 1:
-            st.error(f"Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus (Probabilitas: {prob_positif:.1f}%)")
-            st.markdown("<p style='font-size: 12px; margin-top: 2px;'><b>Rekomendasi Medis:</b> Konsultasi ke dokter spesialis penyakit dalam & batasi konsumsi karbohidrat/gula tinggi.</p>", unsafe_allow_html=True)
+            st.error(f"**POSITIF** — Pasien Terindikasi Diabetes Mellitus ({prob_positif:.1f}%)")
+            st.markdown('<div class="rec-title">Rekomendasi Medis:</div>', unsafe_allow_html=True)
+            st.markdown("""
+            <ul class="rec-list">
+                <li>Segera konsultasi ke dokter spesialis penyakit dalam (Endokrinolog).</li>
+                <li>Batasi asupan karbohidrat sederhana dan makanan berglukosa tinggi.</li>
+            </ul>
+            """, unsafe_allow_html=True)
         else:
-            st.success(f"Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus (Probabilitas Risiko: {prob_positif:.1f}%)")
-            st.markdown("<p style='font-size: 12px; margin-top: 2px;'><b>Rekomendasi Medis:</b> Pertahankan pola hidup sehat, jaga berat badan ideal (BMI normal), dan olahraga rutin 150 menit/minggu.</p>", unsafe_allow_html=True)
+            st.success(f"**NEGATIF** — Pasien Tidak Terindikasi Diabetes Mellitus ({prob_positif:.1f}%)")
+            st.markdown('<div class="rec-title">Rekomendasi Medis:</div>', unsafe_allow_html=True)
+            st.markdown("""
+            <ul class="rec-list">
+                <li>Pertahankan pola hidup sehat dan pertahankan BMI ideal (18.5 - 24.9).</li>
+                <li>Lakukan aktivitas fisik/olahraga rutin minimal 150 menit per minggu.</li>
+            </ul>
+            """, unsafe_allow_html=True)
+            
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ==================== KOLOM 2: TABEL ACUAN PEMBANDING ====================
 with col2:
