@@ -81,15 +81,15 @@ with col1:
         
         with f_col1:
             pregnancies = st.number_input('Pregnancies (Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-            glucose = st.number_input('Glucose (Glukosa mg/dL)', min_value=40, max_value=500, value=100) 
-            blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=40, max_value=240, value=70) 
-            skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=10, max_value=100, value=20)
+            glucose = st.number_input('Glucose (Glukosa mg/dL)', min_value=0, max_value=500, value=0) 
+            blood_pressure = st.number_input('Blood Pressure (Tekanan Darah)', min_value=0, max_value=240, value=0) 
+            skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit)', min_value=0, max_value=100, value=0)
             
         with f_col2:
-            insulin = st.number_input('Insulin (mIU/L)', min_value=15, max_value=900, value=80) 
-            bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=10.0, max_value=70.0, format="%.1f", value=22.5)
-            dpf = st.number_input('Diabetes Pedigree (Skor Genetik)', min_value=0.001, max_value=3.000, format="%.3f", value=0.350)
-            age = st.number_input('Age (Umur Tahun)', min_value=10, max_value=120, step=1, value=25)
+            insulin = st.number_input('Insulin (mIU/L)', min_value=0, max_value=900, value=0) 
+            bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=0.0, max_value=70.0, format="%.1f", value=0.0)
+            dpf = st.number_input('Diabetes Pedigree (Skor Genetik)', min_value=0.000, max_value=3.000, format="%.3f", value=0.000)
+            age = st.number_input('Age (Umur Tahun)', min_value=0, max_value=120, step=1, value=0)
         
         submit = st.form_submit_button("Proses Analisis Medis", use_container_width=True)
 
