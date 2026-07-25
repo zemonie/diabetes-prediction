@@ -164,7 +164,7 @@ with col2:
     | **Pregnancies** | ≤ 5 kali | > 5 kali |
     | **Glucose** | ≤ 160 mg/dL | > 160 mg/dL |
     | **Blood Pressure** | ≤ 80 mmHg | > 80 mmHg |
-    | **Skin Thickness** | ≤ 30 mm | > 30 mm |
+    | **Skin Thickness** | ≤ 50 mm | > 50 mm |
     | **Insulin** | ≤ 160 mIU/L | > 160 mIU/L |
     | **BMI** | ≤ 25.5 kg/m² | > 25.5 kg/m² |
     | **Diabetes Pedigree** | ≤ 0.500 | > 0.500 |
