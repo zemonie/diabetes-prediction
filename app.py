@@ -20,7 +20,7 @@ st.title("Aplikasi Prediksi Diabetes - Algoritma Naive Bayes")
 st.write("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
 st.write("---")
 
-# MEMBUAT TAMPILAN 2 KOLOM (col1 & col2 dibuat di sini agar tidak error)
+# MEMBUAT TAMPILAN 2 KOLOM
 col1, col2 = st.columns([4, 5], gap="large")
 
 # ==================== KOLOM 1: FORM INPUT DATA ====================
@@ -39,76 +39,46 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis")
 
-# ==================== KOLOM 2: DUA TABEL INDIKATOR ACUAN ====================
+# ==================== KOLOM 2: DUA TABEL DILANGSUNGKAN TANPA TOMBOL ====================
 with col2:
     st.subheader("Panduan & Acuan Pembanding Medis")
-    st.info("Pilih tombol acuan di bawah ini untuk melihat detailnya:")
+    st.info("Berikut adalah acuan medis standar internasional serta ambang batas keputusan model AI:")
 
-    # Inisialisasi state untuk menyimpan pilihan tabel
-    if "pilihan_tabel" not in st.session_state:
-        st.session_state.pilihan_tabel = "WHO"
-
-    # Style CSS Khusus agar Tombol Terlihat BESAR & Menonjol
+    # TABEL 1: ACUAN WHO
+    st.markdown("### 📋 TABEL 1: ACUAN WHO / ADA")
     st.markdown("""
-        <style>
-        div.stButton > button {
-            width: 100%;
-            height: 65px;
-            font-size: 17px !important;
-            font-weight: bold !important;
-            border-radius: 10px !important;
-            transition: all 0.2s ease-in-out;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+    | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
+    | :--- | :--- | :--- |
+    | **Pregnancies** | 0 - 3 kali | ≥ 4 kali |
+    | **Glucose** | < 140 mg/dL | ≥ 140 mg/dL |
+    | **Blood Pressure** | < 80 mmHg | ≥ 80 mmHg |
+    | **Skin Thickness** | < 30 mm | ≥ 30 mm |
+    | **Insulin** | < 160 mIU/L | ≥ 160 mIU/L |
+    | **BMI** | < 25.0 kg/m² | ≥ 25.0 kg/m² |
+    | **Diabetes Pedigree** | < 0.500 | ≥ 0.500 |
+    | **Age** | < 30 tahun | ≥ 30 tahun |
+    
+    > *Catatan: Standar acuan medis klinis univariat.*
+    """)
 
-    # Menampilkan 2 Tombol Besar Berdampingan
-    btn_col1, btn_col2 = st.columns(2)
+    st.write("---")
 
-    with btn_col1:
-        if st.button("📋 TABEL 1: ACUAN WHO / ADA", use_container_width=True, type="primary" if st.session_state.pilihan_tabel == "WHO" else "secondary"):
-            st.session_state.pilihan_tabel = "WHO"
-
-    with btn_col2:
-        if st.button("📊 TABEL 2: AMBANG BATAS MODEL AI KITA", use_container_width=True, type="primary" if st.session_state.pilihan_tabel == "AI" else "secondary"):
-            st.session_state.pilihan_tabel = "AI"
-
-    st.write("")
-
-    # Menampilkan Konten Tabel Sesuai Tombol yang Diklik
-    if st.session_state.pilihan_tabel == "WHO":
-        st.markdown("**Standar Klinis Internasional (WHO / ADA)**")
-        st.markdown("""
-        | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
-        | :--- | :--- | :--- |
-        | **Pregnancies** | 0 - 3 kali | ≥ 4 kali |
-        | **Glucose** | < 140 mg/dL | ≥ 140 mg/dL |
-        | **Blood Pressure** | < 80 mmHg | ≥ 80 mmHg |
-        | **Skin Thickness** | < 30 mm | ≥ 30 mm |
-        | **Insulin** | < 160 mIU/L | ≥ 160 mIU/L |
-        | **BMI** | < 25.0 kg/m² | ≥ 25.0 kg/m² |
-        | **Diabetes Pedigree** | < 0.500 | ≥ 0.500 |
-        | **Age** | < 30 tahun | ≥ 30 tahun |
-        
-        > *Catatan: Standar acuan medis klinis univariat.*
-        """)
-
-    elif st.session_state.pilihan_tabel == "AI":
-        st.markdown("**Batas Toleransi Keputusan Model Naive Bayes (Sistem)**")
-        st.markdown("""
-        | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
-        | :--- | :--- | :--- |
-        | **Pregnancies** | ≤ 5 kali | > 5 kali |
-        | **Glucose** | ≤ 160 mg/dL | > 160 mg/dL |
-        | **Blood Pressure** | ≤ 80 mmHg | > 80 mmHg |
-        | **Skin Thickness** | ≤ 30 mm | > 30 mm |
-        | **Insulin** | ≤ 160 mIU/L | > 160 mIU/L |
-        | **BMI** | ≤ 25.5 kg/m² | > 25.5 kg/m² |
-        | **Diabetes Pedigree** | ≤ 0.500 | > 0.500 |
-        | **Age** | ≤ 30 tahun | > 30 tahun |
-        
-        > *Catatan: Nilai pada kolom 'Normal / Rendah Risiko' di atas merupakan batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%). Jika kombinasi fitur melebihi angka tersebut, model akan mengklasifikasikannya sebagai POSITIF.*
-        """)
+    # TABEL 2: AMBANG BATAS AI
+    st.markdown("### 📊 TABEL 2: AMBANG BATAS MODEL AI KITA")
+    st.markdown("""
+    | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
+    | :--- | :--- | :--- |
+    | **Pregnancies** | ≤ 5 kali | > 5 kali |
+    | **Glucose** | ≤ 160 mg/dL | > 160 mg/dL |
+    | **Blood Pressure** | ≤ 80 mmHg | > 80 mmHg |
+    | **Skin Thickness** | ≤ 30 mm | > 30 mm |
+    | **Insulin** | ≤ 160 mIU/L | > 160 mIU/L |
+    | **BMI** | ≤ 25.5 kg/m² | > 25.5 kg/m² |
+    | **Diabetes Pedigree** | ≤ 0.500 | > 0.500 |
+    | **Age** | ≤ 30 tahun | > 30 tahun |
+    
+    > *Catatan: Nilai pada kolom 'Normal / Rendah Risiko' di atas merupakan batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%). Jika kombinasi fitur melebihi angka tersebut, model akan mengklasifikasikannya sebagai POSITIF.*
+    """)
 
 # ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
 if submit:
