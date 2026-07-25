@@ -1,89 +1,43 @@
-import streamlit as st
-import numpy as np
-import pickle
-import pandas as pd
-
-# 1. KONFIGURASI HALAMAN
-st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
-
-# 2. LOAD MODEL NAIVE BAYES & SCALER STERIL
-@st.cache_resource
-def load_model():
-    with open('diabetes_prediction_NB.pkl', 'rb') as f:
-        return pickle.load(f)
-
-model_bundle = load_model()
-model = model_bundle["model"]
-scaler = model_bundle["scaler"]
-
-st.title("Aplikasi Prediksi Diabetes - Algoritma Naive Bayes")
-st.write("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
-st.write("---")
-
-# MEMBUAT TAMPILAN 2 KOLOM
-col1, col2 = st.columns([4, 5], gap="large")
-
-# ==================== KOLOM 1: FORM INPUT DATA ====================
-with col1:
-    st.subheader("Form Data Medis Pasien")
-    
-    with st.form("form_diabetes_kamu"):
-        pregnancies = st.number_input('Pregnancies (Jumlah Kehamilan)', min_value=0, max_value=20, step=1, value=0)
-        glucose = st.number_input('Glucose (Kadar Glukosa mg/dL)', min_value=40, max_value=500, value=100) 
-        blood_pressure = st.number_input('Blood Pressure (Tekanan Darah mmHg)', min_value=40, max_value=240, value=70) 
-        skin_thickness = st.number_input('Skin Thickness (Ketebalan Kulit mm)', min_value=10, max_value=100, value=20)
-        insulin = st.number_input('Insulin (mIU/L)', min_value=15, max_value=900, value=80) 
-        bmi = st.number_input('BMI (Indeks Massa Tubuh)', min_value=10.0, max_value=70.0, format="%.1f", value=22.5)
-        dpf = st.number_input('Diabetes Pedigree Function (Skor Genetik)', min_value=0.001, max_value=3.000, format="%.3f", value=0.350)
-        age = st.number_input('Age (Umur Tahun)', min_value=10, max_value=120, step=1, value=25)
-        
-        submit = st.form_submit_button("Proses Analisis Medis")
-
 # ==================== KOLOM 2: DUA TABEL INDIKATOR ACUAN ====================
 with col2:
     st.subheader("Panduan & Acuan Pembanding Medis")
-    st.info("Pilih tombol acuan di bawah ini untuk melihat detailnya:")
+    st.info("Klik salah satu tombol besar di bawah ini untuk menampilkan tabel acuan:")
 
-    # Style CSS Khusus untuk Mengubah Tab Menjadi Tombol Besar & Menarik
+    # Inisialisasi state untuk menyimpan pilihan tabel (Default: Tabel 1)
+    if "pilihan_tabel" not in st.session_state:
+        st.session_state.pilihan_tabel = "WHO"
+
+    # Styling CSS untuk membuat tombol st.button berukuran BESAR & Mencolok
     st.markdown("""
         <style>
-        /* Mengubah styling container tab menjadi gaya tombol */
-        div[data-baseweb="tab-list"] {
-            gap: 12px;
-        }
-        div[data-baseweb="tab"] {
-            background-color: #f0f2f6;
-            border-radius: 8px;
-            padding: 12px 20px !important;
+        /* Mengubah gaya tombol Streamlit agar berukuran besar dan jelas */
+        div.stButton > button {
+            width: 100%;
+            height: 60px;
+            font-size: 18px !important;
             font-weight: bold !important;
-            font-size: 16px !important;
-            border: 1px solid #d6d6d6;
+            border-radius: 10px !important;
+            border: 2px solid #2e7d32 !important;
             transition: all 0.3s ease;
-        }
-        /* Efek saat kursor diarahkan ke tombol (Hover) */
-        div[data-baseweb="tab"]:hover {
-            background-color: #e0e2e6;
-            border-color: #b0b0b0;
-            cursor: pointer;
-        }
-        /* Style untuk tombol Tab yang sedang AKTIF/DIPILIH */
-        div[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #ff4b4b !important; /* Warna merah Streamlit (bisa ganti sesuai selera) */
-            color: white !important;
-            border-color: #ff4b4b !important;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-        }
-        /* Memastikan teks di dalam tab aktif berwarna putih */
-        div[data-baseweb="tab"][aria-selected="true"] p {
-            color: white !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
-    # Menggunakan tab yang sudah ditransformasi menjadi tombol besar
-    tab1, tab2 = st.tabs(["📋 TABEL 1: ACUAN WHO / ADA", "📊 TABEL 2: AMBANG BATAS MODEL AI KITA"])
+    # Membuat 2 Kolom Tombol Berdampingan
+    btn_col1, btn_col2 = st.columns(2)
 
-    with tab1:
+    with btn_col1:
+        if st.button("📋 TABEL 1: ACUAN WHO / ADA", use_container_width=True, type="primary" if st.session_state.pilihan_tabel == "WHO" else "secondary"):
+            st.session_state.pilihan_tabel = "WHO"
+
+    with btn_col2:
+        if st.button("📊 TABEL 2: AMBANG BATAS MODEL AI KITA", use_container_width=True, type="primary" if st.session_state.pilihan_tabel == "AI" else "secondary"):
+            st.session_state.pilihan_tabel = "AI"
+
+    st.write("") # Jarak pemisah kecil
+
+    # MENAMPILKAN TABEL SESUAI TOMBOL YANG DIKLIK
+    if st.session_state.pilihan_tabel == "WHO":
         st.markdown("**Standar Klinis Internasional (WHO / ADA)**")
         st.markdown("""
         | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
@@ -100,7 +54,7 @@ with col2:
         > *Catatan: Standar acuan medis klinis univariat.*
         """)
 
-    with tab2:
+    elif st.session_state.pilihan_tabel == "AI":
         st.markdown("**Batas Toleransi Keputusan Model Naive Bayes (Sistem)**")
         st.markdown("""
         | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
@@ -115,38 +69,4 @@ with col2:
         | **Age** | ≤ 30 tahun | > 30 tahun |
         
         > *Catatan: Nilai pada kolom 'Normal / Rendah Risiko' di atas merupakan batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%). Jika kombinasi fitur melebihi angka tersebut, model akan mengklasifikasikannya sebagai POSITIF.*
-        """)
-
-# ==================== PROSES PREDIKSI & OUTPUT HASIL ====================
-if submit:
-    kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
-    input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
-    
-    # 1. Feature Scaling steril menggunakan objek scaler dari pickle
-    features_scaled = scaler.transform(input_df)
-    
-    # 2. Prediksi Klasifikasi dan Probabilitas
-    prediction = model.predict(features_scaled)[0]
-    probabilities = model.predict_proba(features_scaled)[0]
-    prob_positif = probabilities[1] * 100
-    
-    st.write("---")
-    st.subheader("Hasil Analisis Model Sistem")
-    
-    st.metric(label="Estimasi Tingkat Probabilitas Risiko Diabetes", value=f"{prob_positif:.1f}%")
-    
-    if prediction == 1:
-        st.error(f"Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus (Probabilitas: {prob_positif:.1f}%)")
-        st.markdown("""
-        **Rekomendasi Akademis & Medis:** 
-        * Segera lakukan pemeriksaan penunjang lanjutan (seperti tes HbA1c) dan konsultasi dengan dokter spesialis penyakit dalam (Endokrinolog).
-        * Mulai batasi asupan karbohidrat sederhana dan makanan dengan indeks glikemik tinggi.
-        """)
-    else:
-        st.success(f"Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus (Probabilitas Risiko: {prob_positif:.1f}%)")
-        st.markdown("""
-        **Rekomendasi Akademis & Medis:** 
-        * Pertahankan pola hidup sehat yang dijalankan saat ini.
-        * Jaga berat badan ideal agar Indeks Massa Tubuh (BMI) tetap berada dalam rentang normal (18.5 - 24.9).
-        * Lakukan aktivitas fisik atau olahraga rutin minimal 150 menit per minggu sesuai anjuran WHO.
         """)
