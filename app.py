@@ -6,7 +6,7 @@ import pandas as pd
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
 
-# STYLING GLOBAL CSS FIX - CLEAN CARD DESIGN
+# STYLING GLOBAL CSS FIX
 st.markdown("""
     <style>
     /* 1. Atur padding utama halaman */
@@ -30,7 +30,7 @@ st.markdown("""
         margin-bottom: -6px !important;
     }
     
-    /* 4. Styling Card Output Prediksi agar Rapi & Elegan */
+    /* 4. Styling Card Output Prediksi */
     .result-card {
         background-color: #f8f9fa;
         border: 1px solid #e9ecef;
@@ -58,10 +58,10 @@ st.markdown("""
         padding-left: 15px;
     }
     
-    /* 5. Formatting Tabel di Kolom Kanan */
+    /* 5. Formatting Tabel & Catatan di Kolom Kanan */
     table {
         font-size: 13px !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 4px !important;
         width: 100% !important;
     }
     th, td {
@@ -70,14 +70,16 @@ st.markdown("""
     .table-title {
         font-size: 14px !important;
         font-weight: bold;
-        margin-top: 3px;
-        margin-bottom: 2px;
+        margin-top: 6px;
+        margin-bottom: 3px;
     }
+    /* Teks Catatan Dibuat Lebih Besar (12.5px) dan Beri Spasi Bawah Agak Lebar (16px) */
     .table-note {
-        font-size: 11px !important;
-        color: #666;
-        margin-top: 1px;
-        margin-bottom: 4px;
+        font-size: 12.5px !important;
+        color: #444444;
+        font-style: italic;
+        margin-top: 3px;
+        margin-bottom: 16px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -120,7 +122,7 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis", use_container_width=True)
 
-    # OUTPUT HASIL PREDIKSI (DESAIN CARD CLEAN & RAPI)
+    # OUTPUT HASIL PREDIKSI
     if submit:
         kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
         input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
