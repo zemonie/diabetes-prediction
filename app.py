@@ -6,50 +6,62 @@ import pandas as pd
 # 1. KONFIGURASI HALAMAN
 st.set_page_config(layout="wide", page_title="Prediksi Diabetes - Naive Bayes")
 
-# STYLING GLOBAL CSS FIX
+# STYLING GLOBAL CSS FIX - PRESISI 1 LAYAR
 st.markdown("""
     <style>
-    /* 1. Beri jarak aman atas agar Judul TIDAK KEPOTONG */
+    /* 1. Atur padding utama halaman */
     .block-container {
-        padding-top: 2.5rem !important;
-        padding-bottom: 1rem !important;
+        padding-top: 2rem !important;
+        padding-bottom: 0.5rem !important;
         max-width: 95% !important;
     }
     
-    /* 2. Rapatkan jarak antar komponen */
+    /* 2. Rapatkan jarak antar widget */
     div[data-testid="stVerticalBlock"] > div {
-        gap: 0.3rem !important;
+        gap: 0.2rem !important;
     }
     
     /* 3. Atur form input agar ringkas */
     div[data-testid="stForm"] {
-        padding: 12px !important;
+        padding: 10px !important;
         border-radius: 8px !important;
     }
     .stNumberInput {
-        margin-bottom: -5px !important;
+        margin-bottom: -6px !important;
     }
     
-    /* 4. Formatting Tabel di Kolom Kanan */
+    /* 4. Rapatkan blok metric & alert hasil agar naik ke atas */
+    div[data-testid="stMetric"] {
+        padding: 0px !important;
+        margin-top: -5px !important;
+        margin-bottom: -5px !important;
+    }
+    .stAlert {
+        padding: 8px 12px !important;
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    /* 5. Formatting Tabel di Kolom Kanan */
     table {
         font-size: 13px !important;
         margin-bottom: 2px !important;
         width: 100% !important;
     }
     th, td {
-        padding: 4px 6px !important;
+        padding: 3px 6px !important;
     }
     .table-title {
         font-size: 14px !important;
         font-weight: bold;
-        margin-top: 4px;
+        margin-top: 3px;
         margin-bottom: 2px;
     }
     .table-note {
         font-size: 11px !important;
         color: #666;
-        margin-top: 2px;
-        margin-bottom: 6px;
+        margin-top: 1px;
+        margin-bottom: 4px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -64,7 +76,7 @@ model_bundle = load_model()
 model = model_bundle["model"]
 scaler = model_bundle["scaler"]
 
-# HEADER UTAMA (Sudah aman dari terpotong)
+# HEADER UTAMA
 st.title("Aplikasi Prediksi Diabetes - Algoritma Naive Bayes")
 st.caption("Masukkan data medis Anda pada form di sebelah kiri untuk melihat hasil analisis prediksi.")
 
@@ -73,7 +85,7 @@ col1, col2 = st.columns([5, 5], gap="medium")
 
 # ==================== KOLOM 1: FORM INPUT + OUTPUT PREDIKSI ====================
 with col1:
-    st.markdown("<h4 style='margin-bottom: 5px;'>Form Data Medis Pasien</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-bottom: 4px; margin-top: 0px;'>Form Data Medis Pasien</h4>", unsafe_allow_html=True)
     
     with st.form("form_diabetes_kamu"):
         f_col1, f_col2 = st.columns(2)
@@ -92,7 +104,7 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis", use_container_width=True)
 
-    # OUTPUT HASIL PREDIKSI (DITARUH DI BAWAH FORM INPUT DALAM KOLOM 1)
+    # OUTPUT HASIL PREDIKSI (LANGSUNG NAIK Tepat Di Bawah Form)
     if submit:
         kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
         input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
@@ -105,29 +117,19 @@ with col1:
         probabilities = model.predict_proba(features_scaled)[0]
         prob_positif = probabilities[1] * 100
         
-        st.write("---")
-        st.markdown("<h4 style='margin-bottom: 2px;'>Hasil Analisis Model Sistem</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 6px; margin-bottom: 2px;'>Hasil Analisis Model Sistem</h4>", unsafe_allow_html=True)
         st.metric(label="Estimasi Tingkat Probabilitas Risiko Diabetes", value=f"{prob_positif:.1f}%")
         
         if prediction == 1:
             st.error(f"Hasil Analisis Medis: Pasien Terindikasi POSITIF Diabetes Mellitus (Probabilitas: {prob_positif:.1f}%)")
-            st.markdown("""
-            **Rekomendasi Akademis & Medis:** 
-            * Segera lakukan pemeriksaan penunjang lanjutan (seperti tes HbA1c) dan konsultasi dengan dokter spesialis penyakit dalam.
-            * Mulai batasi asupan karbohidrat sederhana dan makanan dengan indeks glikemik tinggi.
-            """)
+            st.markdown("<p style='font-size: 12px; margin-top: 2px;'><b>Rekomendasi Medis:</b> Konsultasi ke dokter spesialis penyakit dalam & batasi konsumsi karbohidrat/gula tinggi.</p>", unsafe_allow_html=True)
         else:
             st.success(f"Hasil Analisis Medis: Pasien NEGATIF / Tidak Terindikasi Diabetes Mellitus (Probabilitas Risiko: {prob_positif:.1f}%)")
-            st.markdown("""
-            **Rekomendasi Akademis & Medis:** 
-            * Pertahankan pola hidup sehat yang dijalankan saat ini.
-            * Jaga berat badan ideal agar Indeks Massa Tubuh (BMI) tetap berada dalam rentang normal (18.5 - 24.9).
-            * Lakukan aktivitas fisik atau olahraga rutin minimal 150 menit per minggu sesuai anjuran WHO.
-            """)
+            st.markdown("<p style='font-size: 12px; margin-top: 2px;'><b>Rekomendasi Medis:</b> Pertahankan pola hidup sehat, jaga berat badan ideal (BMI normal), dan olahraga rutin 150 menit/minggu.</p>", unsafe_allow_html=True)
 
 # ==================== KOLOM 2: TABEL ACUAN PEMBANDING ====================
 with col2:
-    st.markdown("<h4 style='margin-bottom: 5px;'>Panduan & Acuan Pembanding Medis</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-bottom: 4px; margin-top: 0px;'>Panduan & Acuan Pembanding Medis</h4>", unsafe_allow_html=True)
     st.info("Berikut acuan medis internasional & ambang batas keputusan model AI:")
 
     # TABEL 1: ACUAN WHO
