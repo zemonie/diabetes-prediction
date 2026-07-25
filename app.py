@@ -94,7 +94,7 @@ with col1:
         
         submit = st.form_submit_button("Proses Analisis Medis", use_container_width=True)
 
-    # OUTPUT HASIL PREDIKSI (DESAIN HTML MURNI: RAPI & TANPA KOTAK KOSONG MELAYANG)
+    # OUTPUT HASIL PREDIKSI (ANGKA & TEKS REKOMENDASI LEBIH BESAR)
     if submit:
         kolom_asli = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
         input_df = pd.DataFrame([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age]], columns=kolom_asli)
@@ -107,24 +107,24 @@ with col1:
         probabilities = model.predict_proba(features_scaled)[0]
         prob_positif = probabilities[1] * 100
         
-        # Header + Metrik Probabilitas (HTML Native Sejajar)
+        # Header + Metrik Probabilitas (Ukuran Angka Diperbesar ke 28px)
         st.markdown(f"""
         <div style="background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px 15px; margin-top: 8px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <span style="font-size: 15px; font-weight: bold; color: #212529;">Hasil Analisis Model Sistem</span>
                 <div style="text-align: right;">
-                    <span style="font-size: 11px; color: #6c757d; display: block;">Probabilitas Risiko</span>
-                    <span style="font-size: 22px; font-weight: bold; color: #212529;">{prob_positif:.1f}%</span>
+                    <span style="font-size: 12px; color: #6c757d; display: block;">Probabilitas Risiko</span>
+                    <span style="font-size: 28px; font-weight: bold; color: #212529; line-height: 1;">{prob_positif:.1f}%</span>
                 </div>
             </div>
         """, unsafe_allow_html=True)
         
-        # Status Diagnosa & Rekomendasi Medis
+        # Status Diagnosa & Rekomendasi Medis (Font Ukuran Diperbesar ke 13.5px & 12.5px)
         if prediction == 1:
             st.error(f"**POSITIF** — Pasien Terindikasi Diabetes Mellitus ({prob_positif:.1f}%)")
             st.markdown("""
-            <div style="font-size: 12px; font-weight: bold; color: #333; margin-top: 6px; margin-bottom: 2px;">Rekomendasi Medis:</div>
-            <ul style="font-size: 11px; color: #495057; margin: 0; padding-left: 15px;">
+            <div style="font-size: 13.5px; font-weight: bold; color: #212529; margin-top: 6px; margin-bottom: 3px;">Rekomendasi Medis:</div>
+            <ul style="font-size: 12.5px; color: #333333; margin: 0; padding-left: 18px; line-height: 1.5;">
                 <li>Segera konsultasi ke dokter spesialis penyakit dalam (Endokrinolog).</li>
                 <li>Batasi asupan karbohidrat sederhana dan makanan berglukosa tinggi.</li>
             </ul>
@@ -132,8 +132,8 @@ with col1:
         else:
             st.success(f"**NEGATIF** — Pasien Tidak Terindikasi Diabetes Mellitus ({prob_positif:.1f}%)")
             st.markdown("""
-            <div style="font-size: 12px; font-weight: bold; color: #333; margin-top: 6px; margin-bottom: 2px;">Rekomendasi Medis:</div>
-            <ul style="font-size: 11px; color: #495057; margin: 0; padding-left: 15px;">
+            <div style="font-size: 13.5px; font-weight: bold; color: #212529; margin-top: 6px; margin-bottom: 3px;">Rekomendasi Medis:</div>
+            <ul style="font-size: 12.5px; color: #333333; margin: 0; padding-left: 18px; line-height: 1.5;">
                 <li>Pertahankan pola hidup sehat dan pertahankan BMI ideal (18.5 - 24.9).</li>
                 <li>Lakukan aktivitas fisik/olahraga rutin minimal 150 menit per minggu.</li>
             </ul>
