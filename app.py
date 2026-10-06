@@ -156,7 +156,7 @@ with col2:
 
 
     # TABEL  ACUAN WHO / ADA
-    st.markdown('<p class="table-title">📋 TABEL 2: ACUAN WHO / ADA</p>', unsafe_allow_html=True)
+    st.markdown('<p class="table-title">📋 TABEL ACUAN WHO / ADA</p>', unsafe_allow_html=True)
     st.markdown("""
     | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
     | :--- | :--- | :--- |
