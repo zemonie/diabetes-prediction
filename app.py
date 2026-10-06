@@ -153,26 +153,9 @@ with col1:
 
 # ==================== KOLOM 2: TABEL ACUAN PEMBANDING ====================
 with col2:
-    st.markdown("<h4 style='margin-bottom: 4px; margin-top: 0px;'>Panduan & Acuan Pembanding Medis</h4>", unsafe_allow_html=True)
-    st.info("Berikut acuan medis internasional & ambang batas keputusan model AI:")
 
-    # TABEL 1 (DITARUH DI ATAS): AMBANG BATAS AI
-    st.markdown('<p class="table-title">📊 TABEL 1: AMBANG BATAS MODEL AI KITA</p>', unsafe_allow_html=True)
-    st.markdown("""
-    | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
-    | :--- | :--- | :--- |
-    | **Pregnancies** | ≤ 5 kali | > 5 kali |
-    | **Glucose** | ≤ 160 mg/dL | > 160 mg/dL |
-    | **Blood Pressure** | ≤ 80 mmHg | > 80 mmHg |
-    | **Skin Thickness** | ≤ 50 mm | > 50 mm |
-    | **Insulin** | ≤ 160 mIU/L | > 160 mIU/L |
-    | **BMI** | ≤ 25.5 kg/m² | > 25.5 kg/m² |
-    | **Diabetes Pedigree** | ≤ 0.500 | > 0.500 |
-    | **Age** | ≤ 30 tahun | > 30 tahun |
-    """)
-    st.markdown('<p class="table-note">*Catatan: Batas toleransi multivariat tertinggi (Probabilitas ≤ 49.7%).</p>', unsafe_allow_html=True)
 
-    # TABEL 2 (DITARUH DI BAWAH): ACUAN WHO / ADA
+    # TABEL  ACUAN WHO / ADA
     st.markdown('<p class="table-title">📋 TABEL 2: ACUAN WHO / ADA</p>', unsafe_allow_html=True)
     st.markdown("""
     | Fitur Medis | Normal / Rendah Risiko | Waspada / Tinggi Risiko |
